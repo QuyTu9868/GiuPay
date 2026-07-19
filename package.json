@@ -1,0 +1,13 @@
+{
+  "name": "giupay-root",
+  "private": true,
+  "scripts": {
+    "dev:all": "concurrently -n backend,indexer,cctp,frontend -c blue,green,yellow,magenta \"npm run dev --prefix backend\" \"npm run indexer --prefix backend\" \"npm run cctp-relayer --prefix backend\" \"npm run dev --prefix frontend\""
+  },
+  "dependencies": {
+    "@auth0/auth0-react": "^2.19.0"
+  },
+  "devDependencies": {
+    "concurrently": "^8.2.2"
+  }
+}

@@ -1,0 +1,7 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 480 200" width="480" height="200" role="img" aria-label="GiuPay">
+  <circle cx="150" cy="100" r="24" fill="#2F7D4F"/>
+  <circle cx="150" cy="100" r="16" fill="none" stroke="#FFFFFF" stroke-opacity="0.5" stroke-width="2.5"/>
+  <path d="M153 71.9 A60 60 0 1 0 153 128.1" fill="none" stroke="#16241C" stroke-width="22" stroke-linecap="round"/>
+  <path d="M153 128.1 L129 117" fill="none" stroke="#16241C" stroke-width="22" stroke-linecap="round"/>
+  <text x="196" y="127" font-family="'Geist',system-ui,-apple-system,'Segoe UI',sans-serif" font-size="76" font-weight="700"><tspan fill="#16241C">Giu</tspan><tspan fill="#2F7D4F">Pay</tspan></text>
+</svg>

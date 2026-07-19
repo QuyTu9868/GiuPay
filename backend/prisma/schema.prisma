@@ -1,0 +1,121 @@
+// prisma/schema.prisma
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+// ─── SHOP ──────────────────────────────────────────────────────────────────
+
+model Shop {
+  id                  String    @id @default(cuid())
+  name                String
+  description         String
+  category            String
+  gmail               String
+  returnPolicy        String
+  facebook            String?
+  walletAddress       String    @unique
+  logo                String?
+  status              String    @default("pending")
+  rejectReason        String?
+  avgRating           Float     @default(0)
+  totalOrders         Int       @default(0)
+  auth0UserId         String?
+  verificationDocCID  String?
+  verificationDocHash String?
+  reviewedAt          DateTime?
+  reviewedBy          String?
+  createdAt           DateTime  @default(now())
+  updatedAt           DateTime  @updatedAt
+
+  orders   Order[]
+  disputes Dispute[]
+}
+
+// ─── ORDER ─────────────────────────────────────────────────────────────────
+
+model Order {
+  id              String    @id @default(cuid())
+  orderId         String    @unique
+  shopId          String
+  shop            Shop      @relation(fields: [shopId], references: [id])
+  productName     String
+  productImage    String?
+  description     String?
+  price           Float
+  quantity        Int       @default(1)
+  warrantyDays    Int       @default(0)
+  buyerAddress    String?
+  buyerEmail      String?
+  txHash          String?
+  sbtTokenId      String?
+  escrowCreatedAt DateTime?
+  status          String    @default("pending")
+  paymentChain    String?
+  createdAt       DateTime  @default(now())
+  updatedAt       DateTime  @updatedAt
+
+  disputes Dispute[]
+  review   Review?
+}
+
+// ─── DISPUTE ───────────────────────────────────────────────────────────────
+
+model Dispute {
+  id           String    @id @default(cuid())
+  orderId      String
+  order        Order     @relation(fields: [orderId], references: [id])
+  shopId       String
+  shop         Shop      @relation(fields: [shopId], references: [id])
+  reason       String
+  status       String    @default("open")
+  shopResponse String?
+  adminNote    String?
+  resolvedBy   String?
+  resolvedAt   DateTime?
+  attemptCount Int       @default(1)
+  depositUSDC  Float     @default(0.5)
+  createdAt    DateTime  @default(now())
+  updatedAt    DateTime  @updatedAt
+}
+
+// ─── REVIEW ────────────────────────────────────────────────────────────────
+
+model Review {
+  id           String   @id @default(cuid())
+  orderId      String   @unique
+  order        Order    @relation(fields: [orderId], references: [id])
+  rating       Int
+  comment      String?
+  buyerAddress String
+  txHash       String?
+  createdAt    DateTime @default(now())
+}
+
+// ─── ADMIN LOG ─────────────────────────────────────────────────────────────
+
+model AdminLog {
+  id        String   @id @default(cuid())
+  adminId   String
+  action    String
+  targetId  String?
+  detail    String?
+  ipAddress String?
+  createdAt DateTime @default(now())
+}
+
+// ─── ADMIN SETTINGS ────────────────────────────────────────────────────────
+
+model AdminSetting {
+  key             String    @id
+  value           String
+  updatedAt       DateTime  @updatedAt
+  updatedBy       String?
+  pendingValue    String?
+  pendingEffectAt DateTime?
+}

@@ -1,0 +1,51 @@
+# Node modules (root + frontend + backend, mọi cấp)
+node_modules/
+
+# Next.js build output
+.next/
+out/
+
+# Backend compile output
+dist/
+
+# Hardhat build artifacts (root + backend/)
+artifacts/
+cache/
+typechain-types/
+
+# Hardhat coverage / gas / snapshot
+coverage/
+.gas-snapshot
+snapshots/
+
+# Playwright test artifacts
+frontend/test-results/
+frontend/playwright-report/
+frontend/blob-report/
+/test-results/
+
+# Typechain output cũ ở gốc (trước khi backend/hardhat.config.ts đặt outDir: "typechain-types")
+/types/
+
+# Environment files — CHỨA SECRET (private key, API key, mật khẩu DB...), TUYỆT ĐỐI không commit
+.env
+.env.*
+!.env.example
+
+# QR mã 2FA admin — encode secret TOTP thật, tuyệt đối không commit
+backend/admin_totp_qr.png
+
+# Logs
+*.log
+npm-debug.log*
+
+# OS / editor junk
+.DS_Store
+Thumbs.db
+.vscode/
+.idea/
+
+# Claude Code — settings.local.json chứa đường dẫn máy + lịch sử quyền RIÊNG của từng máy,
+# không nên chia sẻ qua git. Skill (.claude/skills/) vẫn giữ lại vì dùng chung cho cả team.
+.claude/settings.local.json
+.claude/.credentials.json
