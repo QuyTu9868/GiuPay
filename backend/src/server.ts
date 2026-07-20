@@ -75,4 +75,7 @@ async function start() {
   app.listen(PORT, () => console.log(`🚀 http://localhost:${PORT}`));
 }
 
-start();
+// Export promise (không đổi hành vi chạy độc lập qua `npm run dev`/`start`) — để
+// start-all.ts đợi DB init xong trước khi khởi động indexer/cctp-relayer trong cùng
+// 1 process, tránh race condition query bảng chưa kịp tạo lúc mới boot.
+export const ready = start();
