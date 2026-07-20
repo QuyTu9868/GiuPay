@@ -1,0 +1,8 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 200" width="200" height="200" role="img" aria-label="GiuPay">
+  <g transform="translate(-6,0)">
+    <circle cx="150" cy="100" r="24" fill="#2F7D4F"/>
+    <circle cx="150" cy="100" r="16" fill="none" stroke="#FFFFFF" stroke-opacity="0.5" stroke-width="2.5"/>
+    <path d="M153 71.9 A60 60 0 1 0 153 128.1" fill="none" stroke="#16241C" stroke-width="22" stroke-linecap="round"/>
+    <path d="M153 128.1 L129 117" fill="none" stroke="#16241C" stroke-width="22" stroke-linecap="round"/>
+  </g>
+</svg>

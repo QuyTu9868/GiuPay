@@ -54,6 +54,12 @@ const css = `
   [data-theme="dark"] [data-no-invert] {
     filter: invert(1) hue-rotate(180deg);
   }
+  /* Logo GiuPay (mực đen trên nền trong suốt) — để nó ăn theo 1 lượt đảo màu
+     chung của trang thay vì bị loại trừ, vì loại trừ khiến chữ mực đen gần như
+     biến mất trên nền tối đã đảo màu. */
+  [data-theme="dark"] img.brand-mark {
+    filter: none;
+  }
 `;
 
 export function GlobalCSS() {

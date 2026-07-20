@@ -876,9 +876,7 @@ export default function AdminDashboardPage() {
       <header className={`border-b border-gray-800 px-6 py-4 flex items-center justify-between`}>
         <div className="flex items-center gap-3">
           {/* Logo */}
-          <div className="w-8 h-8 bg-indigo-600 rounded-lg flex items-center justify-center">
-            <span className="text-white text-xs font-bold">AP</span>
-          </div>
+          <img src="/brand/giupay-icon-square.svg" alt="GiuPay" className="w-8 h-8 rounded-lg" />
           <div>
             <span className={`text-sm font-semibold ${T.textPrimary}`}>GiuPay</span>
             <span className={`text-xs ${T.textMuted} ml-2`}>Bảng quản trị</span>

@@ -12,6 +12,7 @@ export default function Document() {
     <Html lang="vi">
       <Head>
         <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=5" />
+        <link rel="icon" type="image/svg+xml" href="/brand/giupay-icon-square.svg" />
       </Head>
       <body>
         <Main />

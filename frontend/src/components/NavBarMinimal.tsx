@@ -7,7 +7,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { Storefront, CaretLeft, Wallet } from "@phosphor-icons/react";
+import { CaretLeft, Wallet } from "@phosphor-icons/react";
 import { useConnectModal, useAccountModal } from "@rainbow-me/rainbowkit";
 import { T } from "@/lib/tokens";
 import { useTheme } from "@/lib/theme";
@@ -70,16 +70,13 @@ export function NavBarMinimal({
         {/* Logo + optional breadcrumb */}
         <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
           <a href="/" style={{ display: "flex", alignItems: "center", gap: 8 }}>
-            <div style={{
-              width: 26, height: 26, borderRadius: 6, backgroundColor: T.ink,
-              display: "flex", alignItems: "center", justifyContent: "center",
-            }}>
-              <Storefront size={13} color={T.canvas} weight="fill" />
-            </div>
-            <span style={{
-              fontFamily: T.fontSans, fontWeight: 650, fontSize: 14,
-              color: T.ink, letterSpacing: "-0.02em",
-            }}>GiuPay</span>
+            <img
+              src="/brand/giupay-logo-horizontal.svg"
+              alt="GiuPay"
+              height={24}
+              className="brand-mark"
+              style={{ height: 24, width: "auto", display: "block" }}
+            />
           </a>
           {title && (
             <>

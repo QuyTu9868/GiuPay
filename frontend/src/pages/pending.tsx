@@ -8,7 +8,7 @@ import { useState, useEffect } from "react";
 import { useWallet } from "@/hooks/useWallet";
 import { useTheme } from "@/lib/theme";
 import { ConnectButton } from "@rainbow-me/rainbowkit";
-import { Storefront, ClockCountdown, CheckCircle, Envelope, CaretLeft, Wallet } from "@phosphor-icons/react";
+import { ClockCountdown, CheckCircle, Envelope, CaretLeft, Wallet } from "@phosphor-icons/react";
 import { T } from "@/lib/tokens";
 
 const API = process.env.NEXT_PUBLIC_API_URL ?? "http://localhost:3001";
@@ -25,10 +25,7 @@ function NavBar() {
           <CaretLeft size={14} weight="bold" /> {t.back}
         </a>
         <div style={{ display:"flex", alignItems:"center", gap:8 }}>
-          <div style={{ width:26, height:26, borderRadius:6, backgroundColor:T.ink, display:"flex", alignItems:"center", justifyContent:"center" }}>
-            <Storefront size={13} color={T.canvas} weight="fill" />
-          </div>
-          <span style={{ fontFamily:T.fontSans, fontWeight:650, fontSize:14, color:T.ink, letterSpacing:"-0.02em" }}>GiuPay</span>
+          <img src="/brand/giupay-logo-horizontal.svg" alt="GiuPay" height={24} className="brand-mark" style={{ height:24, width:"auto", display:"block" }} />
         </div>
         <div style={{ display:"flex", justifyContent:"flex-end", minWidth:60 }}>
           <ConnectButton.Custom>

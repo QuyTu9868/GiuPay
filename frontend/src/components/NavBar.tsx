@@ -24,27 +24,15 @@ interface ShopInfo { id: string; name: string; status?: string; }
 
 // ── Logo ───────────────────────────────────────────────────────────────────────
 function Logo() {
-  const [imgError, setImgError] = useState(false);
   return (
-    <Link href="/" style={{ display: "flex", alignItems: "center", gap: 8 }}>
-      <div style={{ width: 28, height: 28, borderRadius: 6, overflow: "hidden", flexShrink: 0 }}>
-        {!imgError ? (
-          <img
-            src="/logo.png"
-            alt="GiuPay"
-            width={28}
-            height={28}
-            style={{ width: "100%", height: "100%", objectFit: "cover", display: "block" }}
-            onError={() => setImgError(true)}
-          />
-        ) : (
-          <div style={{ width: 28, height: 28, borderRadius: 6, backgroundColor: T.ink, display: "flex", alignItems: "center", justifyContent: "center" }}>
-            <Storefront size={14} color={T.canvas} weight="fill" />
-          </div>
-        )}
-      </div>
-      <span style={{ fontFamily: T.fontSans, fontWeight: 650, fontSize: 15, color: T.ink, letterSpacing: "-0.02em" }}>GiuPay</span>
-      <span style={{ fontFamily: T.fontMono, fontSize: 9, color: T.inkMuted, border: `1px solid ${T.border}`, borderRadius: 4, padding: "1px 5px", backgroundColor: T.surfaceAlt, letterSpacing: "0.05em", textTransform: "uppercase" }}>Testnet</span>
+    <Link href="/" style={{ display: "flex", alignItems: "center" }}>
+      <img
+        src="/brand/giupay-logo-horizontal.svg"
+        alt="GiuPay"
+        height={56}
+        className="brand-mark"
+        style={{ height: 56, width: "auto", display: "block" }}
+      />
     </Link>
   );
 }

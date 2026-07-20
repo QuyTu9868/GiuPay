@@ -415,7 +415,7 @@ function Footer() {
     <footer style={{ padding:"24px 28px", borderTop:`1px solid ${T.border}`, backgroundColor:T.canvas }}>
       <div style={{ maxWidth:1100, margin:"0 auto", display:"flex", alignItems:"center", justifyContent:"space-between", flexWrap:"wrap", gap:12 }}>
         <div style={{ display:"flex", alignItems:"center", gap:8 }}>
-          <Storefront size={13} color={T.inkMuted} weight="duotone" />
+          <img src="/brand/giupay-icon.svg" alt="GiuPay" width={16} height={16} className="brand-mark" style={{ width:16, height:16, display:"block" }} />
           <span style={{ fontFamily:T.fontSans, fontSize:13, color:T.inkMuted }}>GiuPay</span>
           <span style={{ fontFamily:T.fontMono, fontSize:9, border:`1px solid ${T.border}`, borderRadius:4, padding:"1px 5px", backgroundColor:T.surfaceAlt, color:T.inkMuted }}>v1.0</span>
         </div>

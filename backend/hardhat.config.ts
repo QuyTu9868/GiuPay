@@ -32,6 +32,22 @@ const config: HardhatUserConfig = {
     },
   },
 
+  // Blockscout (testnet.arcscan.app) hỗ trợ API kiểu Etherscan để verify source code —
+  // apiKey không cần thật (Blockscout không check), chỉ cần điền chuỗi bất kỳ khác rỗng.
+  etherscan: {
+    apiKey: { arc_testnet: "not-needed-for-blockscout" },
+    customChains: [
+      {
+        network: "arc_testnet",
+        chainId: 5042002,
+        urls: {
+          apiURL: "https://testnet.arcscan.app/api",
+          browserURL: "https://testnet.arcscan.app",
+        },
+      },
+    ],
+  },
+
   typechain: {
     outDir: "typechain-types",
     target: "ethers-v6",
