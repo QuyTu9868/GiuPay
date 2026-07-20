@@ -200,20 +200,15 @@ router.post(
       return;
     }
 
-    // Dev bypass: totp_code '000000' accepted outside production for testnet demo
-    const isDevBypass = process.env.NODE_ENV !== "production" && totp_code === "000000";
+    // Verify với otplib (window: ±1 step = ±30s để bù clock skew)
+    authenticator.options = { window: 1 };
+    const isValid = authenticator.verify({ token: totp_code, secret: totpSecret });
 
-    if (!isDevBypass) {
-      // Verify với otplib (window: ±1 step = ±30s để bù clock skew)
-      authenticator.options = { window: 1 };
-      const isValid = authenticator.verify({ token: totp_code, secret: totpSecret });
-
-      if (!isValid) {
-        // Log thất bại (Security: detect brute-force)
-        await logAdminAction((req as any).adminId, "totp_fail", undefined, undefined, `IP: ${ip}`, ip);
-        res.status(401).json({ success: false, error: "Mã 2FA không đúng hoặc đã hết hạn" } as ApiResponse);
-        return;
-      }
+    if (!isValid) {
+      // Log thất bại (Security: detect brute-force)
+      await logAdminAction((req as any).adminId, "totp_fail", undefined, undefined, `IP: ${ip}`, ip);
+      res.status(401).json({ success: false, error: "Mã 2FA không đúng hoặc đã hết hạn" } as ApiResponse);
+      return;
     }
 
     // Tạo session token

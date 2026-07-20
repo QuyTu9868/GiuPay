@@ -209,7 +209,6 @@ function TwoFAScreen({ onVerified }: { onVerified: (sessionToken: string) => voi
         >
           {loading ? "Đang xác thực..." : "Đăng nhập"}
         </button>
-        <p style={S.hint}>Testnet dev: nhập <span style={{ fontFamily:"monospace", color:"#818cf8" }}>000000</span> để bỏ qua 2FA</p>
       </div>
     </div>
   );
