@@ -228,9 +228,7 @@ function Step2({ onNext, onBack }: { onNext:(cid:string)=>void; onBack:()=>void 
       <div style={{ display:"flex", alignItems:"flex-start", gap:10, padding:"12px 14px", borderRadius:8, border:`1px solid ${T.border}`, backgroundColor:T.surfaceAlt }}>
         <Info size={13} color={T.inkMuted} style={{ flexShrink:0, marginTop:1 }} />
         <p style={{ fontFamily:T.fontSans, fontSize:12, color:T.inkMuted, lineHeight:1.6 }}>
-          {isVi ? "Upload CCCD, hộ chiếu hoặc giấy phép kinh doanh. File sẽ được mã hóa và lưu trên IPFS." : "Upload your ID card, passport, or business license. The file will be encrypted and stored on IPFS."}
-          {" "}
-          <span style={{ color:T.inkMuted }}>({isVi ? "Không bắt buộc" : "Optional"})</span>
+          {isVi ? "Tải ảnh cửa hàng của bạn lên. File sẽ được mã hóa và lưu trên IPFS." : "Upload a photo of your shop. The file will be encrypted and stored on IPFS."}
         </p>
       </div>
 
@@ -265,29 +263,16 @@ function Step2({ onNext, onBack }: { onNext:(cid:string)=>void; onBack:()=>void 
         >
           <CaretLeft size={13} weight="bold" /> {t.prev}
         </button>
-        {/* Submit với doc đã upload */}
-        {doc?.cid && (
-          <button onClick={handleSubmit} disabled={submitting} style={{ flex:1, display:"flex", alignItems:"center", justifyContent:"center", gap:8, fontFamily:T.fontSans, fontSize:14, fontWeight:500, color:T.canvas, backgroundColor: submitting ? T.border : T.ink, borderRadius:6, padding:"13px 0", cursor: submitting ? "not-allowed" : "pointer", transition:"background-color 150ms", border:"none" }}
-            onMouseEnter={e => { if (!submitting) e.currentTarget.style.backgroundColor = "#333"; }}
-            onMouseLeave={e => { if (!submitting) e.currentTarget.style.backgroundColor = T.ink; }}
-          >
-            {submitting
-              ? <><div style={{ width:14, height:14, borderRadius:"50%", border:"2px solid rgba(255,255,255,0.3)", borderTopColor:T.canvas, animation:"ap-spin 700ms linear infinite" }} />{isVi ? "Đang nộp..." : "Submitting..."}</>
-              : <>{t.submitShop} <ArrowRight size={13} weight="bold" /></>
-            }
-          </button>
-        )}
-        {/* Bỏ qua nếu chưa upload hoặc upload lỗi — KHÓA lại khi ảnh đang tải để tránh submit giữa chừng */}
-        {!doc?.cid && (
-          <button onClick={() => onNext("")} disabled={doc?.uploading} style={{ flex:1, display:"flex", alignItems:"center", justifyContent:"center", gap:8, fontFamily:T.fontSans, fontSize:14, fontWeight:500, color:T.canvas, backgroundColor: doc?.uploading ? T.border : T.ink, borderRadius:6, padding:"13px 0", cursor: doc?.uploading ? "not-allowed" : "pointer", transition:"background-color 150ms", border:"none" }}
-            onMouseEnter={e => { if (!doc?.uploading) e.currentTarget.style.backgroundColor = "#333"; }}
-            onMouseLeave={e => { if (!doc?.uploading) e.currentTarget.style.backgroundColor = T.ink; }}
-          >
-            {doc?.uploading
-              ? (isVi ? "Đang tải ảnh..." : "Uploading...")
-              : <>{isVi ? "Bỏ qua & Nộp đơn" : "Skip & Submit"} <ArrowRight size={13} weight="bold" /></>}
-          </button>
-        )}
+        {/* Bắt buộc phải có file upload thành công (doc.cid) mới bấm được — không còn lựa chọn bỏ qua */}
+        <button onClick={handleSubmit} disabled={!doc?.cid || submitting} style={{ flex:1, display:"flex", alignItems:"center", justifyContent:"center", gap:8, fontFamily:T.fontSans, fontSize:14, fontWeight:500, color:T.canvas, backgroundColor: (!doc?.cid || submitting) ? T.border : T.ink, borderRadius:6, padding:"13px 0", cursor: (!doc?.cid || submitting) ? "not-allowed" : "pointer", transition:"background-color 150ms", border:"none" }}
+          onMouseEnter={e => { if (doc?.cid && !submitting) e.currentTarget.style.backgroundColor = "#333"; }}
+          onMouseLeave={e => { if (doc?.cid && !submitting) e.currentTarget.style.backgroundColor = T.ink; }}
+        >
+          {submitting
+            ? <><div style={{ width:14, height:14, borderRadius:"50%", border:"2px solid rgba(255,255,255,0.3)", borderTopColor:T.canvas, animation:"ap-spin 700ms linear infinite" }} />{isVi ? "Đang nộp..." : "Submitting..."}</>
+            : <>{t.submitShop} <ArrowRight size={13} weight="bold" /></>
+          }
+        </button>
       </div>
     </div>
   );
