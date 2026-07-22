@@ -361,7 +361,10 @@ router.post("/:code/duplicate", requireShop, async (req: Request, res: Response)
 // PUT /api/orders/:code/status — Update sau thanh toán (frontend gọi)
 router.put("/:code/status", validate(updateStatusSchema), async (req: Request, res: Response) => {
   const b = req.body;
-  const { rows: existing } = await db.query<Order>("SELECT * FROM orders WHERE order_code=$1", [(req.params.code as string).toUpperCase()]);
+  const { rows: existing } = await db.query<Order & { shop_name: string }>(
+    "SELECT o.*, s.name AS shop_name FROM orders o JOIN shops s ON s.id = o.shop_id WHERE o.order_code=$1",
+    [(req.params.code as string).toUpperCase()]
+  );
   if (!existing.length) { res.status(404).json({ success: false, error: "Không tìm thấy đơn" }); return; }
 
   const order = existing[0];
@@ -410,7 +413,9 @@ router.put("/:code/status", validate(updateStatusSchema), async (req: Request, r
       const tokenId = await mintWarrantySBT({
         order_code: updated.order_code, product_name: updated.product_name,
         product_image_cid: updated.product_image_cid, warranty_days: updated.warranty_days,
-        buyer_wallet: updated.buyer_wallet,
+        buyer_wallet: updated.buyer_wallet, description: updated.description,
+        shop_name: order.shop_name, price_usdc: updated.price_usdc,
+        chain_paid_from: updated.chain_paid_from, purchased_at: updated.escrow_created_at,
       });
       if (tokenId) {
         await db.query("UPDATE orders SET sbt_token_id=$1 WHERE id=$2", [tokenId, updated.id]);
@@ -564,9 +569,11 @@ router.put("/:code/dispute/:disputeId/resolve", requireAdminSession, validate(re
   const b = req.body;
   const { rows: [dispute] } = await db.query(
     `SELECT d.*, o.id as order_id, o.order_code, o.product_name, o.product_image_cid,
-            o.warranty_days, o.buyer_wallet
+            o.warranty_days, o.buyer_wallet, o.description, o.price_usdc,
+            o.chain_paid_from, o.escrow_created_at, s.name AS shop_name
      FROM disputes d
      JOIN orders o ON o.id=d.order_id
+     JOIN shops s ON s.id=o.shop_id
      WHERE d.id=$1 AND o.order_code=$2 AND d.status='open'`,
     [(req.params.disputeId as string), (req.params.code as string).toUpperCase()]
   );
@@ -608,7 +615,9 @@ router.put("/:code/dispute/:disputeId/resolve", requireAdminSession, validate(re
         const tokenId = await mintWarrantySBT({
           order_code: dispute.order_code, product_name: dispute.product_name,
           product_image_cid: dispute.product_image_cid, warranty_days: dispute.warranty_days,
-          buyer_wallet: dispute.buyer_wallet,
+          buyer_wallet: dispute.buyer_wallet, description: dispute.description,
+          shop_name: dispute.shop_name, price_usdc: dispute.price_usdc,
+          chain_paid_from: dispute.chain_paid_from, purchased_at: dispute.escrow_created_at,
         });
         if (tokenId) await db.query("UPDATE orders SET sbt_token_id=$1 WHERE id=$2", [tokenId, dispute.order_id]);
       } catch (sbtErr: any) {

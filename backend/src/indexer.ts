@@ -87,13 +87,16 @@ async function setLastBlock(block: number): Promise<void> {
 interface OrderRow {
   id: string; order_code: string; status: string; escrow_created_at: string | null;
   product_name: string; product_image_cid: string | null; warranty_days: number;
+  description: string | null; price_usdc: string; shop_name: string;
 }
 
 async function buildOrderMap(): Promise<Map<string, OrderRow>> {
   const { rows } = await db.query<OrderRow>(
-    `SELECT id, order_code, status, escrow_created_at, product_name, product_image_cid, warranty_days
-       FROM orders
-      WHERE status NOT IN ('released','refunded')`
+    `SELECT o.id, o.order_code, o.status, o.escrow_created_at, o.product_name, o.product_image_cid,
+            o.warranty_days, o.description, o.price_usdc, s.name AS shop_name
+       FROM orders o
+       JOIN shops s ON s.id = o.shop_id
+      WHERE o.status NOT IN ('released','refunded')`
   );
   const map = new Map<string, OrderRow>();
   for (const o of rows) map.set(orderIdFromCode(o.order_code), o);
@@ -127,7 +130,9 @@ async function onPaymentReceived(
     const tokenId = await mintWarrantySBT({
       order_code: order.order_code, product_name: order.product_name,
       product_image_cid: order.product_image_cid, warranty_days: order.warranty_days,
-      buyer_wallet: buyer,
+      buyer_wallet: buyer, description: order.description, shop_name: order.shop_name,
+      price_usdc: order.price_usdc, chain_paid_from: "arc",
+      purchased_at: new Date(blockTs * 1000),
     });
     if (tokenId) {
       await db.query("UPDATE orders SET sbt_token_id = $1 WHERE id = $2", [tokenId, order.id]);

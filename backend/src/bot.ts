@@ -179,8 +179,10 @@ async function releaseMaturedEscrows(): Promise<void> {
   // Lấy các đơn in_escrow đủ 14 ngày + không tranh chấp mở
   const { rows: orders } = await db.query(`
     SELECT o.id, o.order_code, o.escrow_created_at, o.product_name, o.product_image_cid,
-           o.warranty_days, o.buyer_wallet
+           o.warranty_days, o.buyer_wallet, o.description, o.price_usdc, o.chain_paid_from,
+           s.name AS shop_name
     FROM orders o
+    JOIN shops s ON s.id = o.shop_id
     WHERE o.status = 'in_escrow'
       AND o.escrow_created_at IS NOT NULL
       AND o.escrow_created_at + interval '14 days' <= NOW()
@@ -226,7 +228,9 @@ async function releaseMaturedEscrows(): Promise<void> {
         const tokenId = await mintWarrantySBT({
           order_code: order.order_code, product_name: order.product_name,
           product_image_cid: order.product_image_cid, warranty_days: order.warranty_days,
-          buyer_wallet: order.buyer_wallet,
+          buyer_wallet: order.buyer_wallet, description: order.description,
+          shop_name: order.shop_name, price_usdc: order.price_usdc,
+          chain_paid_from: order.chain_paid_from, purchased_at: order.escrow_created_at,
         });
         if (tokenId) {
           await db.query("UPDATE orders SET sbt_token_id = $1 WHERE id = $2", [tokenId, order.id]);

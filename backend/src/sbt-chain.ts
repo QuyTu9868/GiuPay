@@ -42,8 +42,14 @@ export interface MintableOrder {
   order_code: string;
   product_name: string;
   product_image_cid?: string | null;
+  description?: string | null;
   warranty_days: number;
   buyer_wallet?: string | null;
+  shop_name?: string | null;
+  price_usdc?: string | number | null;
+  chain_paid_from?: string | null;
+  /** Mốc tiền vào escrow — dùng làm "ngày mua" + gốc tính hạn bảo hành. Thiếu thì dùng thời điểm mint. */
+  purchased_at?: string | Date | null;
 }
 
 /**
@@ -70,17 +76,38 @@ export async function mintWarrantySBT(order: MintableOrder): Promise<number | nu
   const existingTokenId: bigint = await readContract.orderToToken(orderId);
   if (existingTokenId > 0n) return Number(existingTokenId); // đã mint rồi (vd bot restart giữa chừng)
 
+  // Ngày mua = lúc tiền vào escrow (không phải lúc mint — bot.ts mint trễ tới tận lúc release
+  // sau 14 ngày) — dùng làm gốc tính luôn hạn bảo hành thành 1 NGÀY CỤ THỂ thay vì chỉ ghi số
+  // ngày chung chung (dễ hiểu hơn nhiều khi xem trên explorer/ví).
+  const purchasedAt = order.purchased_at ? new Date(order.purchased_at) : new Date();
+  const warrantyExpiry = order.warranty_days > 0
+    ? new Date(purchasedAt.getTime() + order.warranty_days * 86_400_000)
+    : null;
+  const isoDate = (d: Date) => d.toISOString().slice(0, 10);
+
   const metadataCid = await pinJSONToIPFS(
     {
       name: order.product_name,
-      description: `GiuPay purchase proof — order ${order.order_code}`,
+      // Mô tả thật của sản phẩm (nếu có) thay vì 1 câu chung chung không ăn nhập với món đã mua.
+      description: order.description
+        ? `${order.description} — Purchased via GiuPay, order ${order.order_code}.`
+        : `GiuPay purchase proof — order ${order.order_code}`,
       // ipfs:// không fetch được trực tiếp trong <img> trình duyệt (không phải scheme HTTP) —
       // nhiều explorer (vd Blockscout) không tự resolve, hiện icon placeholder. Dùng gateway HTTP
       // để hiện ảnh preview được ở cả explorer lẫn ví.
       image: order.product_image_cid ? `https://ipfs.io/ipfs/${order.product_image_cid}` : "",
+      // Link bấm thẳng từ NFT/explorer quay lại xem trạng thái đơn MỚI NHẤT trên web — trạng thái
+      // đơn đổi theo thời gian nên để ở đây thay vì "đóng cứng" vào metadata tĩnh.
+      external_url: `${(process.env.GIUPAY_FRONTEND_URL ?? "http://localhost:3000").replace(/\/$/, "")}/order/${order.order_code}`,
       attributes: [
         { trait_type: "Order code", value: order.order_code },
-        { trait_type: "Warranty days", value: order.warranty_days },
+        ...(order.shop_name ? [{ trait_type: "Shop", value: order.shop_name }] : []),
+        ...(order.price_usdc != null ? [{ trait_type: "Amount paid (USDC)", value: String(order.price_usdc) }] : []),
+        { trait_type: "Purchase date", value: isoDate(purchasedAt) },
+        warrantyExpiry
+          ? { trait_type: "Warranty expires", value: isoDate(warrantyExpiry) }
+          : { trait_type: "Warranty", value: "None" },
+        ...(order.chain_paid_from ? [{ trait_type: "Paid via", value: order.chain_paid_from }] : []),
       ],
     },
     `giupay-sbt-${order.order_code}`
