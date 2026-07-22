@@ -31,6 +31,7 @@ import { db } from "./db";
 // dùng làm bytes32 argument on-chain, không phân biệt hoa/thường) từ escrow-chain.ts — file này
 // không có side-effect nào khi import. Xem BUGLOG.md 2026-07-18.
 import { orderIdFromCode } from "./escrow-chain";
+import { mintWarrantySBT } from "./sbt-chain";
 
 dotenv.config();
 
@@ -107,6 +108,13 @@ interface BridgingOrder {
   bridge_source_domain: number;
   bridge_burn_tx_hash: string;
   shop_wallet: string;
+  shop_name: string;
+  product_name: string;
+  product_image_cid: string | null;
+  description: string | null;
+  warranty_days: number;
+  buyer_wallet: string | null;
+  chain_paid_from: string | null;
 }
 
 async function processOrder(order: BridgingOrder, signer: Wallet): Promise<void> {
@@ -160,16 +168,36 @@ async function processOrder(order: BridgingOrder, signer: Wallet): Promise<void>
     const payReceipt = await payTx.wait();
 
     // buyer_wallet + chain_paid_from đã được lưu đúng từ bước /bridge-start — chỉ cần cập nhật trạng thái.
-    await db.query(
+    const { rows: updatedRows } = await db.query<{ escrow_created_at: string }>(
       `UPDATE orders
           SET status = 'in_escrow', bridge_status = 'paid',
               bridge_mint_tx_hash = $2, tx_hash = $3,
               escrow_created_at = COALESCE(escrow_created_at, NOW()), updated_at = NOW()
-        WHERE id = $1`,
+        WHERE id = $1 RETURNING escrow_created_at`,
       [order.id, mintReceipt.hash, payReceipt.hash]
     );
 
     console.log(`[CCTP] 🎉 Đơn ${order_code} đã vào escrow | pay tx ${payReceipt.hash}`);
+
+    // Mint SBT bằng chứng mua hàng — 3 luồng vào escrow còn lại (orders.ts, indexer.ts, bot.ts)
+    // đều đã gọi mint ở đây, riêng luồng CCTP này trước đó bỏ sót nên đơn trả bằng cầu nối
+    // (khác chain) không bao giờ có SBT. Lỗi ở đây KHÔNG được chặn luồng chính (tiền đã vào
+    // escrow thật rồi) — chỉ log để xử lý tay sau nếu cần (xem sbt-chain.ts).
+    try {
+      const tokenId = await mintWarrantySBT({
+        order_code, product_name: order.product_name,
+        product_image_cid: order.product_image_cid, warranty_days: order.warranty_days,
+        buyer_wallet: order.buyer_wallet, description: order.description,
+        shop_name: order.shop_name, price_usdc: order.price_usdc,
+        chain_paid_from: order.chain_paid_from, purchased_at: updatedRows[0].escrow_created_at,
+      });
+      if (tokenId) {
+        await db.query("UPDATE orders SET sbt_token_id = $1 WHERE id = $2", [tokenId, order.id]);
+        console.log(`[CCTP] 🎖️  Đã mint SBT #${tokenId} cho đơn ${order_code}`);
+      }
+    } catch (sbtErr: any) {
+      console.error(`[CCTP] ⚠️  Đơn ${order_code} vào escrow nhưng mint SBT lỗi:`, sbtErr?.message ?? sbtErr);
+    }
   } catch (err: any) {
     const errMsg = err?.shortMessage ?? err?.message ?? String(err);
     console.error(`[CCTP] ❌ Lỗi hoàn tất bắc cầu — đơn ${order_code}:`, errMsg);
@@ -186,7 +214,9 @@ async function tick(): Promise<void> {
   const { rows: orders } = await db.query<BridgingOrder>(`
     SELECT o.id, o.order_code, o.price_usdc, o.quantity,
            o.bridge_source_domain, o.bridge_burn_tx_hash,
-           s.wallet_address AS shop_wallet
+           o.product_name, o.product_image_cid, o.description,
+           o.warranty_days, o.buyer_wallet, o.chain_paid_from,
+           s.wallet_address AS shop_wallet, s.name AS shop_name
       FROM orders o JOIN shops s ON s.id = o.shop_id
      WHERE o.bridge_status = 'pending'
   `);
