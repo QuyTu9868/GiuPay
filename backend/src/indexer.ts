@@ -15,6 +15,7 @@
 import { ethers, JsonRpcProvider, Contract } from "ethers";
 import dotenv from "dotenv";
 import { db } from "./db";
+import { mintWarrantySBT } from "./sbt-chain";
 
 dotenv.config();
 
@@ -83,11 +84,14 @@ async function setLastBlock(block: number): Promise<void> {
 }
 
 // ── Map orderId(hash) → đơn (chỉ các đơn CHƯA chốt) ──────────────────────────
-interface OrderRow { id: string; order_code: string; status: string; escrow_created_at: string | null; }
+interface OrderRow {
+  id: string; order_code: string; status: string; escrow_created_at: string | null;
+  product_name: string; product_image_cid: string | null; warranty_days: number;
+}
 
 async function buildOrderMap(): Promise<Map<string, OrderRow>> {
   const { rows } = await db.query<OrderRow>(
-    `SELECT id, order_code, status, escrow_created_at
+    `SELECT id, order_code, status, escrow_created_at, product_name, product_image_cid, warranty_days
        FROM orders
       WHERE status NOT IN ('released','refunded')`
   );
@@ -115,6 +119,23 @@ async function onPaymentReceived(
     [order.id, buyer.toLowerCase(), txHash, blockTs]
   );
   console.log(`[Indexer] 💰 in_escrow: đơn ${order.order_code} | buyer ${buyer} | tx ${txHash}`);
+
+  // Mint SBT bằng chứng mua hàng ngay khi vào escrow — cùng logic với orders.ts (route
+  // PUT /status), phòng trường hợp đường đó không chạy được (vd backend cold-start lúc buyer
+  // vừa ký xong) và chỉ có indexer bắt được event on-chain. Idempotent, không mint trùng.
+  try {
+    const tokenId = await mintWarrantySBT({
+      order_code: order.order_code, product_name: order.product_name,
+      product_image_cid: order.product_image_cid, warranty_days: order.warranty_days,
+      buyer_wallet: buyer,
+    });
+    if (tokenId) {
+      await db.query("UPDATE orders SET sbt_token_id = $1 WHERE id = $2", [tokenId, order.id]);
+      console.log(`[Indexer] 🎖️  Đã mint SBT #${tokenId} cho đơn ${order.order_code}`);
+    }
+  } catch (sbtErr: any) {
+    console.error(`[Indexer] ⚠️  Vào escrow thành công nhưng mint SBT lỗi — đơn ${order.order_code}:`, sbtErr?.message ?? sbtErr);
+  }
 }
 
 async function onEscrowFinalized(order: OrderRow, newStatus: "released" | "refunded", txHash: string): Promise<void> {
