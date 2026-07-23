@@ -89,9 +89,8 @@ export async function mintWarrantySBT(order: MintableOrder): Promise<number | nu
     {
       name: order.product_name,
       // Mô tả thật của sản phẩm (nếu có) thay vì 1 câu chung chung không ăn nhập với món đã mua.
-      description: order.description
-        ? `${order.description} — Purchased via GiuPay, order ${order.order_code}.`
-        : `GiuPay purchase proof — order ${order.order_code}`,
+      // Chỉ hiện đúng mô tả sản phẩm — mã đơn đã có sẵn ở attributes "Order code" bên dưới.
+      description: order.description ?? `GiuPay purchase proof — order ${order.order_code}`,
       // ipfs:// không fetch được trực tiếp trong <img> trình duyệt (không phải scheme HTTP) —
       // nhiều explorer (vd Blockscout) không tự resolve, hiện icon placeholder. Dùng gateway HTTP
       // để hiện ảnh preview được ở cả explorer lẫn ví.
