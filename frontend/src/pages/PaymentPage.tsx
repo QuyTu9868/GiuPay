@@ -214,7 +214,7 @@ function OrderCard({ order, isVi }: { order:OrderData; isVi:boolean }) {
 
 // Popup đánh giá — bật ngay sau khi thanh toán xong, để buyer đánh giá liền cho mượt, không phải
 // vào Profile mới đánh giá. Gọi POST /:code/review (backend đã cho đánh giá từ lúc in_escrow).
-function ReviewPopup({ orderCode, shopName, isVi, onClose }: { orderCode:string; shopName:string; isVi:boolean; onClose:()=>void }) {
+function ReviewPopup({ orderCode, shopName, isVi, onClose, onReviewed }: { orderCode:string; shopName:string; isVi:boolean; onClose:()=>void; onReviewed:()=>void }) {
   const { walletAddress } = useWallet();
   const [rating, setRating]       = useState(0);
   const [hover, setHover]         = useState(0);
@@ -234,7 +234,7 @@ function ReviewPopup({ orderCode, shopName, isVi, onClose }: { orderCode:string;
         body: JSON.stringify({ rating, comment: comment.trim() || undefined }),
       });
       const j = await r.json().catch(()=>({}));
-      if (r.ok || r.status===409) { setDone(true); return; } // 409 = đã đánh giá rồi → coi như xong
+      if (r.ok || r.status===409) { setDone(true); onReviewed(); return; } // 409 = đã đánh giá rồi → coi như xong
       setError(j.error ?? (isVi?"Gửi đánh giá thất bại":"Failed to submit review"));
     } catch {
       setError(isVi?"Lỗi kết nối, thử lại":"Connection error, try again");
@@ -300,18 +300,21 @@ function PaymentPanel({ order }: { order:OrderData }) {
   const [sbtToastOpen, setSbtToastOpen] = useState(false);
 
   // Thanh toán xong (step "done") → tự bật popup đánh giá 1 lần, buyer đánh giá liền cho mượt.
-  // Đồng thời báo cho buyer biết SBT bằng chứng mua hàng đã được tạo (mint chạy ngầm phía
-  // backend, buyer không ký gì cho việc này nên không có gì báo trước đó) — tự tắt sau 15s
-  // hoặc tắt sớm nếu buyer bấm đóng/bấm vào link Profile.
+  // Toast báo SBT KHÔNG bật cùng lúc ở đây nữa — dời sang sau khi buyer đã đánh giá xong
+  // (xem onReviewed ở ReviewPopup) để tránh 2 popup chồng nhau ngay lúc vừa thanh toán.
   useEffect(() => {
     if (step === "done" && !reviewShownRef.current) {
       reviewShownRef.current = true;
       setReviewOpen(true);
-      setSbtToastOpen(true);
-      const timer = setTimeout(() => setSbtToastOpen(false), 30000);
-      return () => clearTimeout(timer);
     }
   }, [step]);
+
+  // Bật toast báo SBT đã mint SAU khi buyer đã đánh giá xong — tự tắt sau 30s hoặc tắt sớm
+  // nếu buyer bấm đóng/bấm vào link Profile.
+  function handleReviewed() {
+    setSbtToastOpen(true);
+    setTimeout(() => setSbtToastOpen(false), 30000);
+  }
 
   // Lưu địa chỉ giao hàng buyer lên đơn (dùng cho cả luồng dApp lẫn QR)
   async function saveShipping() {
@@ -474,6 +477,10 @@ function PaymentPanel({ order }: { order:OrderData }) {
               maxFee, 1000, // minFinalityThreshold=1000 -> Fast Transfer (~30s thay vì 15-20 phút)
             ],
             chainId: cfg.chainId,
+            // Gas cố định: một số ví tự ước tính ra con số vô lý (thấy thực tế 21_000_000) rồi bị
+            // RPC node (vd Infura) chặn thẳng vì vượt trần cứng (16_777_216) — depositForBurn thật
+            // tốn dưới 200k gas nên 300k đủ dư, tránh phụ thuộc ước tính sai của ví.
+            gas: 300000n,
           })
         );
         hash = burnHash as string;
@@ -745,14 +752,14 @@ function PaymentPanel({ order }: { order:OrderData }) {
         <>
           {/* Popup đánh giá — tự bật khi thanh toán xong (step "done"), buyer khỏi phải vào Profile */}
           {reviewOpen && (
-            <ReviewPopup orderCode={order.orderCode} shopName={order.shopName} isVi={isVi} onClose={() => setReviewOpen(false)} />
+            <ReviewPopup orderCode={order.orderCode} shopName={order.shopName} isVi={isVi} onClose={() => setReviewOpen(false)} onReviewed={handleReviewed} />
           )}
 
-          {/* Toast báo SBT đã được mint — buyer không ký gì cho việc này (mint chạy ngầm phía backend
-              sau khi in_escrow) nên cần báo rõ, không thì buyer không biết SBT tồn tại. Tự tắt 30s.
-              Canh giữa NGANG màn hình, đặt gần đỉnh (top) — ReviewPopup canh giữa cả ngang lẫn dọc
-              (chiếm giữa màn hình), đặt toast ở top thay vì giữa dọc luôn để 2 popup không đè lên
-              nhau khi cùng hiện một lúc. */}
+          {/* Toast báo SBT đã được mint — chỉ bật SAU khi buyer đã đánh giá xong (handleReviewed),
+              không hiện cùng lúc với popup đánh giá. Buyer không ký gì cho việc mint (chạy ngầm
+              phía backend sau khi in_escrow) nên cần báo rõ, không thì không biết SBT tồn tại.
+              Canh giữa NGANG màn hình, đặt gần đỉnh (top) để không đè lên ReviewPopup nếu cả 2
+              vẫn còn trên màn hình cùng lúc (vd buyer đánh giá xong nhưng chưa bấm Đóng). */}
           {sbtToastOpen && (
             <div style={{ position:"fixed", top:20, left:"50%", transform:"translateX(-50%)", zIndex:260, maxWidth:400, width:"calc(100% - 40px)", backgroundColor:T.surface, border:`1px solid ${T.green.text}33`, borderRadius:12, padding:"18px 20px", boxShadow:"0 8px 32px rgba(0,0,0,0.16)", display:"flex", alignItems:"flex-start", gap:12 }}>
               <SealCheck size={26} color={T.green.text} weight="fill" style={{ flexShrink:0, marginTop:1 }} />
