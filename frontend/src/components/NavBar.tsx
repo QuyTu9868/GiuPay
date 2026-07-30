@@ -253,6 +253,12 @@ export function NavBar() {
                     <Storefront size={13} weight="fill" /> {shopBtnLabel}
                   </Link>
                 )}
+                <Link href="/docs" style={{ fontFamily: T.fontSans, fontSize: 13, fontWeight: 600, color: T.ink, backgroundColor: T.surfaceAlt, border: `1px solid ${T.border}`, padding: "7px 12px", borderRadius: 6, transition: "border-color 150ms" }}
+                  onMouseEnter={e => (e.currentTarget.style.borderColor = T.inkMid)}
+                  onMouseLeave={e => (e.currentTarget.style.borderColor = T.border)}
+                >
+                  {t.docsNavTitle}
+                </Link>
                 {/* Chat buyer-seller — mở ChatWidget thật (conversations + thread + gửi ảnh) */}
                 <div ref={chatRef} style={{ position: "relative" }}>
                   <button style={iconBtn} onClick={() => setChatOpen(o => !o)} title={lang === "vi" ? "Nhắn tin với người bán" : "Chat with seller"}
@@ -340,6 +346,11 @@ export function NavBar() {
                     <Storefront size={14} weight="fill" /> {shopBtnLabel}
                   </Link>
                 )}
+                <Link href="/docs" onClick={() => setOpen(false)}
+                  style={{ fontFamily: T.fontSans, fontSize: 14, fontWeight: 600, color: T.ink, padding: "10px 0", borderBottom: `1px solid ${T.border}` }}
+                >
+                  {t.docsNavTitle}
+                </Link>
                 <button onClick={() => setChatOpen(o => !o)}
                   style={{ display: "flex", alignItems: "center", gap: 6, fontFamily: T.fontSans, fontSize: 14, fontWeight: 600, color: T.ink, padding: "10px 0", borderBottom: `1px solid ${T.border}` }}
                 >

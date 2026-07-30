@@ -247,8 +247,6 @@ export const translations = {
 
     docsReviewChatTitle:"Đánh giá & nhắn tin",
     docsReviewChatBody:"Sau khi đơn hoàn tất, buyer để lại đánh giá (số sao + nhận xét) hiển thị công khai trên trang shop, giúp buyer sau tham khảo. Buyer và shop cũng có thể nhắn tin trực tiếp trong app để hỏi đáp về đơn hàng.",
-
-    docsMoreLink:     "Xem đầy đủ cách GiuPay hoạt động →",
   },
 
   // ─────────────────────────────────────────────────────────────────────────────
@@ -485,8 +483,6 @@ export const translations = {
 
     docsReviewChatTitle:"Reviews & chat",
     docsReviewChatBody:"Once an order is complete, buyers can leave a review (star rating + comment) shown publicly on the shop's page, helping future buyers. Buyers and shops can also message each other directly in the app about an order.",
-
-    docsMoreLink:     "See the full guide to how GiuPay works →",
   },
 } as const;
 
