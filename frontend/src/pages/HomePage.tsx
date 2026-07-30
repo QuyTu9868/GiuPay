@@ -218,11 +218,16 @@ function HowItWorks() {
           ))}
         </div>
 
-        <div style={{ marginTop:18, display:"inline-flex", alignItems:"center", gap:8, padding:"10px 14px", borderRadius:8, border:`1px solid ${T.border}`, backgroundColor:T.surfaceAlt }}>
-          <CurrencyDollar size={13} color={T.inkMuted} />
-          <span style={{ fontFamily:T.fontSans, fontSize:12, color:T.inkMuted }}>
-            <strong style={{ color:T.ink }}>0.1%</strong> {lang === "vi" ? "mỗi giao dịch · Không phí tháng" : "per transaction · No monthly fees"}
-          </span>
+        <div style={{ marginTop:18, display:"flex", flexWrap:"wrap", alignItems:"center", gap:12 }}>
+          <div style={{ display:"inline-flex", alignItems:"center", gap:8, padding:"10px 14px", borderRadius:8, border:`1px solid ${T.border}`, backgroundColor:T.surfaceAlt }}>
+            <CurrencyDollar size={13} color={T.inkMuted} />
+            <span style={{ fontFamily:T.fontSans, fontSize:12, color:T.inkMuted }}>
+              <strong style={{ color:T.ink }}>0.1%</strong> {lang === "vi" ? "mỗi giao dịch · Không phí tháng" : "per transaction · No monthly fees"}
+            </span>
+          </div>
+          <Link href="/docs" style={{ fontFamily:T.fontSans, fontSize:13, fontWeight:600, color:T.ink, textDecoration:"underline", textUnderlineOffset:3 }}>
+            {t.docsMoreLink}
+          </Link>
         </div>
       </div>
     </section>
