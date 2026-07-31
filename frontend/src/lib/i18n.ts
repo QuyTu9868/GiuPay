@@ -210,17 +210,17 @@ export const translations = {
     docsSubtitle:     "Tổng quan cách thanh toán, bảo vệ escrow, bảo hành và tranh chấp hoạt động trên GiuPay.",
 
     docsOverviewTitle:"Tổng quan",
-    docsOverviewBody: "GiuPay là nền tảng thanh toán escrow phi tập trung trên Arc Testnet. Bất kỳ shop nào cũng có thể bán hàng và nhận thanh toán bằng USDC, trong khi buyer được bảo vệ nhờ escrow thông minh: tiền không chuyển thẳng cho shop mà tạm giữ trong smart contract 14 ngày — đủ thời gian để phát hiện vấn đề và mở tranh chấp nếu cần.",
+    docsOverviewBody: "GiuPay là nền tảng thanh toán escrow phi tập trung trên Arc Testnet. Bất kỳ shop nào cũng có thể bán hàng và nhận thanh toán bằng USDC, trong khi buyer được bảo vệ nhờ escrow thông minh: tiền không chuyển thẳng cho shop mà tạm giữ trong smart contract 14 ngày - đủ thời gian để phát hiện vấn đề và mở tranh chấp nếu cần.",
 
     docsBuyerTitle:   "Dành cho người mua",
     docsBuyer1Title:  "Kết nối ví & khám phá",
     docsBuyer1Desc:   "Kết nối ví (không cần tài khoản/mật khẩu), duyệt danh sách shop và sản phẩm, xem đánh giá từ người mua trước.",
     docsBuyer2Title:  "Thanh toán",
-    docsBuyer2Desc:   "Trả trực tiếp bằng USDC trên Arc, hoặc bắc cầu USDC từ Ethereum, Base, Arbitrum, OP Sepolia qua Circle CCTP — tiền tự động đổ về đúng đơn trên Arc.",
+    docsBuyer2Desc:   "Trả trực tiếp bằng USDC trên Arc, hoặc bắc cầu USDC từ Ethereum, Base, Arbitrum, OP Sepolia qua Circle CCTP - tiền tự động đổ về đúng đơn trên Arc.",
     docsBuyer3Title:  "Tiền vào escrow",
     docsBuyer3Desc:   "Tiền không về tay shop ngay mà được giữ trong smart contract 14 ngày. Đây là thời gian buyer kiểm tra hàng và phản hồi nếu có vấn đề.",
     docsBuyer4Title:  "Nhận SBT bảo hành",
-    docsBuyer4Desc:   "Ngay khi thanh toán vào escrow, 1 NFT bảo hành (không chuyển nhượng được) tự động xuất hiện trong hồ sơ — vừa là bằng chứng mua hàng, vừa theo dõi thời hạn bảo hành.",
+    docsBuyer4Desc:   "Ngay khi thanh toán vào escrow, 1 NFT bảo hành (không chuyển nhượng được) tự động xuất hiện trong hồ sơ - vừa là bằng chứng mua hàng, vừa theo dõi thời hạn bảo hành.",
     docsBuyer5Title:  "Đánh giá & mở tranh chấp nếu cần",
     docsBuyer5Desc:   "Sau khi nhận hàng, buyer có thể để lại đánh giá. Nếu hàng có vấn đề, buyer mở tranh chấp bất kỳ lúc nào trong 14 ngày escrow.",
 
@@ -228,25 +228,65 @@ export const translations = {
     docsSeller1Title: "Đăng ký shop",
     docsSeller1Desc:  "Điền thông tin shop (tên, mô tả, danh mục, chính sách đổi trả) và tải lên giấy tờ xác minh.",
     docsSeller2Title: "Chờ duyệt",
-    docsSeller2Desc:  "Đội ngũ GiuPay xác minh danh tính (thường trong 24 giờ), sau đó shop được xác nhận luôn trên blockchain — đây là điều kiện để buyer trả tiền được.",
+    docsSeller2Desc:  "Đội ngũ GiuPay xác minh danh tính (thường trong 24 giờ), sau đó shop được xác nhận luôn trên blockchain - đây là điều kiện để buyer trả tiền được.",
     docsSeller3Title: "Đăng sản phẩm",
     docsSeller3Desc:  "Thêm sản phẩm với giá, ảnh và số ngày bảo hành. Buyer mua được ngay không cần thao tác gì thêm từ shop.",
     docsSeller4Title: "Giao hàng",
     docsSeller4Desc:  "Cập nhật trạng thái giao hàng cho buyer theo dõi. Nếu buyer mở tranh chấp, shop có thể tự nguyện hoàn tiền hoặc chờ admin xử lý.",
     docsSeller5Title: "Nhận tiền tự động",
-    docsSeller5Desc:  "Nếu không có tranh chấp, tiền tự động chuyển vào ví shop sau 14 ngày — không cần thao tác gì thêm.",
+    docsSeller5Desc:  "Nếu không có tranh chấp, tiền tự động chuyển vào ví shop sau 14 ngày - không cần thao tác gì thêm.",
 
     docsEscrowTitle:  "Vì sao cần escrow",
-    docsEscrowBody:   "Escrow giữ tiền buyer trong smart contract thay vì chuyển thẳng cho shop, ngăn tình trạng nhận tiền xong không giao hàng. Sau 14 ngày không có tranh chấp, hợp đồng tự động giải phóng tiền cho shop — không cần admin can thiệp. GiuPay thu phí 0.1% mỗi giao dịch, không có phí ẩn nào khác.",
+    docsEscrowBody:   "Escrow giữ tiền buyer trong smart contract thay vì chuyển thẳng cho shop, ngăn tình trạng nhận tiền xong không giao hàng. Sau 14 ngày không có tranh chấp, hợp đồng tự động giải phóng tiền cho shop - không cần admin can thiệp. GiuPay thu phí 0.1% mỗi giao dịch, không có phí ẩn nào khác.",
 
-    docsWarrantyTitle:"SBT — bằng chứng mua hàng & bảo hành",
-    docsWarrantyBody: "Ngay khi đơn vào escrow, 1 NFT soulbound (không thể chuyển nhượng hay bán lại) được tự động mint cho ví buyer — không cần buyer ký thêm giao dịch nào. NFT này lưu tên sản phẩm, shop, số tiền, ngày mua và ngày hết hạn bảo hành ngay trên blockchain, xem được công khai trên block explorer. Nếu sản phẩm không có bảo hành, NFT tồn tại vĩnh viễn như bằng chứng mua hàng; nếu có bảo hành, NFT tự động bị thu hồi (burn) khi hết hạn.",
+    docsWarrantyTitle:"SBT - bằng chứng mua hàng & bảo hành",
+    docsWarrantyBody: "Ngay khi đơn vào escrow, 1 NFT soulbound (không thể chuyển nhượng hay bán lại) được tự động mint cho ví buyer - không cần buyer ký thêm giao dịch nào. NFT này lưu tên sản phẩm, shop, số tiền, ngày mua và ngày hết hạn bảo hành ngay trên blockchain, xem được công khai trên block explorer. Nếu sản phẩm không có bảo hành, NFT tồn tại vĩnh viễn như bằng chứng mua hàng; nếu có bảo hành, NFT tự động bị thu hồi (burn) khi hết hạn.",
 
     docsDisputeTitle: "Giải quyết tranh chấp",
-    docsDisputeBody:  "Trong 14 ngày tiền còn ở escrow, buyer có thể mở tranh chấp nếu hàng lỗi, sai mô tả hoặc không nhận được hàng. Shop có thể chủ động hoàn tiền để giải quyết nhanh. Nếu 2 bên không thống nhất được, đội ngũ GiuPay xem xét bằng chứng từ cả 2 phía và đưa ra quyết định cuối cùng — hoàn tiền cho buyer hoặc giải ngân cho shop. Mọi quyết định đều được ghi nhận trên blockchain.",
+    docsDisputeBody:  "Trong 14 ngày tiền còn ở escrow, buyer có thể mở tranh chấp nếu hàng lỗi, sai mô tả hoặc không nhận được hàng. Shop có thể chủ động hoàn tiền để giải quyết nhanh. Nếu 2 bên không thống nhất được, đội ngũ GiuPay xem xét bằng chứng từ cả 2 phía và đưa ra quyết định cuối cùng - hoàn tiền cho buyer hoặc giải ngân cho shop. Mọi quyết định đều được ghi nhận trên blockchain.",
 
     docsReviewChatTitle:"Đánh giá & nhắn tin",
     docsReviewChatBody:"Sau khi đơn hoàn tất, buyer để lại đánh giá (số sao + nhận xét) hiển thị công khai trên trang shop, giúp buyer sau tham khảo. Buyer và shop cũng có thể nhắn tin trực tiếp trong app để hỏi đáp về đơn hàng.",
+
+    // Mục lục (sidebar)
+    docsTocOverview:  "Tổng quan",
+    docsTocBuyers:    "Người mua",
+    docsTocSellers:   "Người bán",
+    docsTocEscrow:    "Vì sao cần escrow",
+    docsTocWarranty:  "SBT bảo hành",
+    docsTocDispute:   "Tranh chấp",
+    docsTocReviews:   "Đánh giá & nhắn tin",
+    docsTocTech:      "Công nghệ sử dụng",
+    docsTocContracts: "Contract đã deploy",
+    docsTocFaq:       "Câu hỏi thường gặp",
+
+    // Công nghệ sử dụng
+    docsTechTitle:        "Công nghệ sử dụng",
+    docsTechFrontendLabel:"Frontend",
+    docsTechBackendLabel: "Backend",
+    docsTechContractsLabel:"Hợp đồng thông minh",
+    docsTechStorageLabel: "Lưu trữ",
+    docsTechPaymentsLabel:"Thanh toán",
+
+    // Contract đã deploy
+    docsContractsTitle:  "Contract đã deploy (Arc Testnet)",
+    docsContractsBody:   "Cả 3 contract đều đã verify, xem source code công khai trên Arc Explorer.",
+    docsContractsViewOn: "Xem trên Arc Explorer",
+
+    // FAQ
+    docsFaqTitle:     "Câu hỏi thường gặp",
+    docsFaq1Q:        "Đây là tiền thật hay chỉ là mô phỏng?",
+    docsFaq1A:        "GiuPay chạy trên Arc Testnet với USDC testnet, không phải tiền thật, nhưng mọi giao dịch đều là giao dịch on-chain thật 100%, không có phần nào giả lập.",
+    docsFaq2Q:        "GiuPay thu phí bao nhiêu?",
+    docsFaq2A:        "0.1% mỗi giao dịch, không có phí tháng hay phí ẩn nào khác.",
+    docsFaq3Q:        "Nếu buyer và shop không tự thoả thuận được khi tranh chấp thì sao?",
+    docsFaq3A:        "Đội ngũ GiuPay xem xét bằng chứng từ cả 2 phía và đưa ra quyết định cuối cùng ngay trên blockchain - hoàn tiền cho buyer hoặc giải ngân cho shop.",
+    docsFaq4Q:        "GiuPay đã lên mainnet chưa?",
+    docsFaq4A:        "Chưa. GiuPay hiện đang chạy trên Arc Testnet và tiếp tục được phát triển.",
+    docsFaq5Q:        "SBT bảo hành có bị mất khi hết hạn không?",
+    docsFaq5A:        "Nếu sản phẩm có thời hạn bảo hành, SBT tự động bị thu hồi khi hết hạn. Nếu sản phẩm không có bảo hành, SBT tồn tại vĩnh viễn làm bằng chứng mua hàng.",
+    docsFaq6Q:        "Tôi có thể trả tiền từ chain nào khác Arc không?",
+    docsFaq6A:        "Có. Ngoài trả trực tiếp bằng USDC trên Arc, bạn có thể bắc cầu USDC từ Ethereum, Base, Arbitrum hoặc OP Sepolia qua Circle CCTP.",
   },
 
   // ─────────────────────────────────────────────────────────────────────────────
@@ -446,17 +486,17 @@ export const translations = {
     docsSubtitle:     "An overview of payments, escrow protection, warranty, and dispute resolution on GiuPay.",
 
     docsOverviewTitle:"Overview",
-    docsOverviewBody: "GiuPay is a decentralized escrow payment platform on Arc Testnet. Any shop can sell and accept USDC payments, while buyers are protected by smart-contract escrow: funds don't go straight to the shop but are held for 14 days — enough time to spot issues and open a dispute if needed.",
+    docsOverviewBody: "GiuPay is a decentralized escrow payment platform on Arc Testnet. Any shop can sell and accept USDC payments, while buyers are protected by smart-contract escrow: funds don't go straight to the shop but are held for 14 days - enough time to spot issues and open a dispute if needed.",
 
     docsBuyerTitle:   "For buyers",
     docsBuyer1Title:  "Connect wallet & browse",
     docsBuyer1Desc:   "Connect your wallet (no account or password needed), browse shops and products, and read reviews from previous buyers.",
     docsBuyer2Title:  "Pay",
-    docsBuyer2Desc:   "Pay directly in USDC on Arc, or bridge USDC in from Ethereum, Base, Arbitrum, or OP Sepolia via Circle's CCTP — funds land straight into the right order on Arc.",
+    docsBuyer2Desc:   "Pay directly in USDC on Arc, or bridge USDC in from Ethereum, Base, Arbitrum, or OP Sepolia via Circle's CCTP - funds land straight into the right order on Arc.",
     docsBuyer3Title:  "Funds go into escrow",
-    docsBuyer3Desc:   "Money doesn't go to the shop right away — it's held in a smart contract for 14 days, giving you time to check the item and respond if something's wrong.",
+    docsBuyer3Desc:   "Money doesn't go to the shop right away - it's held in a smart contract for 14 days, giving you time to check the item and respond if something's wrong.",
     docsBuyer4Title:  "Get a warranty SBT",
-    docsBuyer4Desc:   "As soon as payment lands in escrow, a non-transferable warranty NFT automatically appears in your profile — it's both proof of purchase and a warranty timer.",
+    docsBuyer4Desc:   "As soon as payment lands in escrow, a non-transferable warranty NFT automatically appears in your profile - it's both proof of purchase and a warranty timer.",
     docsBuyer5Title:  "Review & open a dispute if needed",
     docsBuyer5Desc:   "After receiving the item, you can leave a review. If something's wrong, you can open a dispute anytime within the 14-day escrow window.",
 
@@ -464,25 +504,65 @@ export const translations = {
     docsSeller1Title: "Register your shop",
     docsSeller1Desc:  "Fill in your shop's details (name, description, category, return policy) and upload a verification document.",
     docsSeller2Title: "Wait for approval",
-    docsSeller2Desc:  "The GiuPay team verifies your identity (usually within 24 hours), then your shop is confirmed on-chain — this is required before buyers can pay you.",
+    docsSeller2Desc:  "The GiuPay team verifies your identity (usually within 24 hours), then your shop is confirmed on-chain - this is required before buyers can pay you.",
     docsSeller3Title: "List products",
     docsSeller3Desc:  "Add products with a price, photo, and warranty period. Buyers can purchase immediately, no extra step needed from you.",
     docsSeller4Title: "Ship it",
     docsSeller4Desc:  "Update the shipping status so buyers can track it. If a buyer opens a dispute, you can voluntarily refund or wait for GiuPay to resolve it.",
     docsSeller5Title: "Get paid automatically",
-    docsSeller5Desc:  "If there's no dispute, funds are automatically released to your wallet after 14 days — no extra action needed.",
+    docsSeller5Desc:  "If there's no dispute, funds are automatically released to your wallet after 14 days - no extra action needed.",
 
     docsEscrowTitle:  "Why escrow",
-    docsEscrowBody:   "Escrow holds the buyer's funds in a smart contract instead of sending them straight to the shop, preventing a shop from taking payment without delivering. After 14 days with no dispute, the contract automatically releases the funds to the shop — no admin involved. GiuPay charges a 0.1% fee per transaction, with no other hidden fees.",
+    docsEscrowBody:   "Escrow holds the buyer's funds in a smart contract instead of sending them straight to the shop, preventing a shop from taking payment without delivering. After 14 days with no dispute, the contract automatically releases the funds to the shop - no admin involved. GiuPay charges a 0.1% fee per transaction, with no other hidden fees.",
 
-    docsWarrantyTitle:"SBT — proof of purchase & warranty",
-    docsWarrantyBody: "As soon as an order enters escrow, a soulbound NFT (non-transferable, can't be sold) is automatically minted to the buyer's wallet — no extra signature needed. It records the product name, shop, amount paid, purchase date, and warranty expiry directly on-chain, publicly viewable on a block explorer. If the product has no warranty, the NFT exists forever as proof of purchase; if it does, the NFT is automatically burned once the warranty expires.",
+    docsWarrantyTitle:"SBT - proof of purchase & warranty",
+    docsWarrantyBody: "As soon as an order enters escrow, a soulbound NFT (non-transferable, can't be sold) is automatically minted to the buyer's wallet - no extra signature needed. It records the product name, shop, amount paid, purchase date, and warranty expiry directly on-chain, publicly viewable on a block explorer. If the product has no warranty, the NFT exists forever as proof of purchase; if it does, the NFT is automatically burned once the warranty expires.",
 
     docsDisputeTitle: "Dispute resolution",
-    docsDisputeBody:  "While funds are still in escrow (within 14 days), a buyer can open a dispute if an item is defective, not as described, or never arrived. The shop can voluntarily refund to resolve it quickly. If the two sides can't agree, the GiuPay team reviews evidence from both and makes a final call — refunding the buyer or releasing funds to the shop. Every decision is recorded on-chain.",
+    docsDisputeBody:  "While funds are still in escrow (within 14 days), a buyer can open a dispute if an item is defective, not as described, or never arrived. The shop can voluntarily refund to resolve it quickly. If the two sides can't agree, the GiuPay team reviews evidence from both and makes a final call - refunding the buyer or releasing funds to the shop. Every decision is recorded on-chain.",
 
     docsReviewChatTitle:"Reviews & chat",
     docsReviewChatBody:"Once an order is complete, buyers can leave a review (star rating + comment) shown publicly on the shop's page, helping future buyers. Buyers and shops can also message each other directly in the app about an order.",
+
+    // Table of contents (sidebar)
+    docsTocOverview:  "Overview",
+    docsTocBuyers:    "For buyers",
+    docsTocSellers:   "For sellers",
+    docsTocEscrow:    "Why escrow",
+    docsTocWarranty:  "Warranty SBT",
+    docsTocDispute:   "Disputes",
+    docsTocReviews:   "Reviews & chat",
+    docsTocTech:      "Tech stack",
+    docsTocContracts: "Deployed contracts",
+    docsTocFaq:       "FAQ",
+
+    // Tech stack
+    docsTechTitle:        "Tech stack",
+    docsTechFrontendLabel:"Frontend",
+    docsTechBackendLabel: "Backend",
+    docsTechContractsLabel:"Smart contracts",
+    docsTechStorageLabel: "Storage",
+    docsTechPaymentsLabel:"Payments",
+
+    // Deployed contracts
+    docsContractsTitle:  "Deployed contracts (Arc Testnet)",
+    docsContractsBody:   "All 3 contracts are verified, with public source code on Arc Explorer.",
+    docsContractsViewOn: "View on Arc Explorer",
+
+    // FAQ
+    docsFaqTitle:     "Frequently asked questions",
+    docsFaq1Q:        "Is this real money or just a simulation?",
+    docsFaq1A:        "GiuPay runs on Arc Testnet with testnet USDC, not real money, but every transaction is a real 100% on-chain transaction, nothing is simulated.",
+    docsFaq2Q:        "What fee does GiuPay charge?",
+    docsFaq2A:        "0.1% per transaction, with no monthly fee or any other hidden cost.",
+    docsFaq3Q:        "What happens if a buyer and shop can't agree on a dispute?",
+    docsFaq3A:        "The GiuPay team reviews evidence from both sides and makes a final on-chain decision - refunding the buyer or releasing funds to the shop.",
+    docsFaq4Q:        "Is GiuPay live on mainnet?",
+    docsFaq4A:        "Not yet. GiuPay currently runs on Arc Testnet and is still being actively developed.",
+    docsFaq5Q:        "Does the warranty SBT disappear when the warranty ends?",
+    docsFaq5A:        "If the product has a warranty period, the SBT is automatically burned once it expires. If the product has no warranty, the SBT exists forever as proof of purchase.",
+    docsFaq6Q:        "Can I pay from a chain other than Arc?",
+    docsFaq6A:        "Yes. Besides paying directly in USDC on Arc, you can bridge USDC in from Ethereum, Base, Arbitrum, or OP Sepolia via Circle's CCTP.",
   },
 } as const;
 
