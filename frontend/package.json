@@ -29,6 +29,7 @@
   },
   "devDependencies": {
     "@playwright/test": "^1.41.2",
+    "@tenkeylabs/dappwright": "^2.13.12",
     "@types/node": "^20.19.43",
     "@types/react": "^18.3.31",
     "@types/react-dom": "^18.3.0",

@@ -24,6 +24,10 @@ frontend/playwright-report/
 frontend/blob-report/
 /test-results/
 
+# Synpress cache — CHỨA ví MetaMask đã import PRIVATE KEY, tuyệt đối không commit
+.cache-synpress/
+frontend/.cache-synpress/
+
 # Typechain output cũ ở gốc (trước khi backend/hardhat.config.ts đặt outDir: "typechain-types")
 /types/
 
@@ -34,6 +38,10 @@ frontend/blob-report/
 
 # QR mã 2FA admin — encode secret TOTP thật, tuyệt đối không commit
 backend/admin_totp_qr.png
+
+# Private key ví demo shop (tự tạo để đăng ký shop test) - TUYỆT ĐỐI không commit
+shop-images/shop-wallets.json
+shop-images/*.json
 
 # Logs
 *.log
