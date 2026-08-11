@@ -108,6 +108,36 @@ function genInitials(name: string) {
   return name.split(" ").slice(-2).map((w) => w[0]).join("").toUpperCase();
 }
 
+/**
+ * Ảnh đại diện shop trong trang Admin. Shop đăng ký qua UI thật lưu ảnh cửa hàng ở doc_cid
+ * (form đăng ký ghi "Tải ảnh cửa hàng của bạn lên"), shop seed sẵn thì dùng logo_cid, nhận cả
+ * hai. Không có ảnh hoặc ảnh hỏng thì rơi về ô chữ cái đầu như trước.
+ */
+function ShopThumb({
+  shop, className, style,
+}: {
+  shop: { name: string; logo_cid?: string; doc_cid?: string };
+  className?: string;
+  style?: React.CSSProperties;
+}) {
+  const [broken, setBroken] = useState(false);
+  const cid = shop.logo_cid || shop.doc_cid;
+
+  if (!cid || broken) {
+    return <div className={className} style={style}>{genInitials(shop.name)}</div>;
+  }
+  return (
+    <div className={className} style={{ ...style, overflow: "hidden", padding: 0 }}>
+      <img
+        src={`https://ipfs.io/ipfs/${cid}`}
+        alt={shop.name}
+        onError={() => setBroken(true)}
+        style={{ width: "100%", height: "100%", objectFit: "cover", display: "block" }}
+      />
+    </div>
+  );
+}
+
 const CATEGORY_COLORS: Record<string, string> = {
   "Thời trang": "bg-pink-500/10 text-pink-400",
   "Điện tử": "bg-blue-500/10 text-blue-400",
@@ -300,7 +330,7 @@ function ShopDetailPanel({
         <div style={P.body}>
           {/* Identity */}
           <div style={P.row}>
-            <div style={P.avatar}>{genInitials(shop.name)}</div>
+            <ShopThumb shop={shop} style={P.avatar} />
             <div>
               <p style={P.name}>{shop.name}</p>
               <p style={P.sub}>{shop.gmail}</p>
@@ -351,26 +381,23 @@ function ShopDetailPanel({
             </div>
           )}
 
-          {/* Verification doc */}
+          {/* Shop photo */}
           <div style={P.docBox}>
-            <p style={{ ...P.label, marginBottom:8 }}>Giấy tờ xác minh</p>
-            {shop.doc_cid ? (
+            <p style={{ ...P.label, marginBottom:8 }}>Ảnh cửa hàng</p>
+            {shop.logo_cid || shop.doc_cid ? (
               <a
-                href={`https://gateway.pinata.cloud/ipfs/${shop.doc_cid}`}
+                href={`https://ipfs.io/ipfs/${shop.logo_cid || shop.doc_cid}`}
                 target="_blank"
                 rel="noreferrer"
-                style={P.docLink}
               >
-                <svg width="14" height="14" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}>
-                  <path strokeLinecap="round" strokeLinejoin="round" d="M19.5 14.25v-2.625a3.375 3.375 0 00-3.375-3.375h-1.5A1.125 1.125 0 0113.5 7.125v-1.5a3.375 3.375 0 00-3.375-3.375H8.25m0 12.75h7.5m-7.5 3H12M10.5 2.25H5.625c-.621 0-1.125.504-1.125 1.125v17.25c0 .621.504 1.125 1.125 1.125h12.75c.621 0 1.125-.504 1.125-1.125V11.25a9 9 0 00-9-9z" />
-                </svg>
-                Xem file (IPFS)
+                <img
+                  src={`https://ipfs.io/ipfs/${shop.logo_cid || shop.doc_cid}`}
+                  alt={shop.name}
+                  style={{ width:"100%", maxHeight:220, objectFit:"cover", borderRadius:8, display:"block" }}
+                />
               </a>
             ) : (
-              <p style={P.hint}>Chưa có file</p>
-            )}
-            {shop.doc_hash && (
-              <p style={{ ...P.mono, marginTop:6 }}>Hash: {shop.doc_hash}</p>
+              <p style={P.hint}>Chưa có ảnh</p>
             )}
           </div>
 
@@ -983,9 +1010,7 @@ export default function AdminDashboardPage() {
                     onClick={() => setSelectedShop(shop)}
                   >
                     {/* Avatar */}
-                    <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-indigo-500/20 to-purple-500/20 flex items-center justify-center text-xs font-bold text-white flex-shrink-0">
-                      {genInitials(shop.name)}
-                    </div>
+                    <ShopThumb shop={shop} className="w-10 h-10 rounded-xl bg-gradient-to-br from-indigo-500/20 to-purple-500/20 flex items-center justify-center text-xs font-bold text-white flex-shrink-0" />
 
                     {/* Info */}
                     <div className="flex-1 min-w-0">
@@ -1033,9 +1058,7 @@ export default function AdminDashboardPage() {
           <div className="space-y-3">
             {verifiedShops.map((shop) => (
               <div key={shop.id} className={`${T.surface} ${T.border} ${T.radius} p-4 flex items-center gap-4`}>
-                <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-emerald-500/20 to-teal-500/20 flex items-center justify-center text-xs font-bold text-white flex-shrink-0">
-                  {genInitials(shop.name)}
-                </div>
+                <ShopThumb shop={shop} className="w-10 h-10 rounded-xl bg-gradient-to-br from-emerald-500/20 to-teal-500/20 flex items-center justify-center text-xs font-bold text-white flex-shrink-0" />
 
                 <div className="flex-1 min-w-0">
                   <div className="flex items-center gap-2 flex-wrap">
@@ -1048,7 +1071,9 @@ export default function AdminDashboardPage() {
                     </span>
                   </div>
                   <p className={`text-xs ${T.textMuted} mt-0.5`}>
-                    {shop.gmail} · {shop.total_orders ?? 0} đơn · ⭐ {shop.avg_rating?.toFixed(1) ?? "—"}
+                    {/* avg_rating từ API là CHUỖI ("5.0") vì Postgres numeric, gọi thẳng .toFixed()
+                        sẽ crash cả trang ("t.toFixed is not a function"), ?. không chặn được sai kiểu. */}
+                    {shop.gmail} · {shop.total_orders ?? 0} đơn · ⭐ {shop.avg_rating != null ? Number(shop.avg_rating).toFixed(1) : "—"}
                   </p>
                 </div>
 
