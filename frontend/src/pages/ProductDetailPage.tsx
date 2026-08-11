@@ -147,7 +147,7 @@ export default function ProductDetailPage({ initialListing }: ProductDetailPageP
             {/* Image */}
             <div style={{ border: `1px solid ${T.border}`, borderRadius: 12, backgroundColor: T.surface, overflow: "hidden" }}>
               <img
-                src={listing.imageCid ? `https://ipfs.io/ipfs/${listing.imageCid}` : coverImage(listing.id, listing.category ?? undefined, 600, 420)}
+                src={listing.imageCid ? `https://gateway.pinata.cloud/ipfs/${listing.imageCid}` : coverImage(listing.id, listing.category ?? undefined, 600, 420)}
                 alt={listing.name}
                 style={{ width: "100%", height: 420, objectFit: "contain", display: "block", backgroundColor: T.surfaceAlt }}
                 onError={e => {

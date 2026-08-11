@@ -442,7 +442,7 @@ export function ChatWidget({ variant = "popover", onClose, autoOpenShopId, autoO
                       fontFamily: T.fontSans, fontSize: 13, lineHeight: 1.5, opacity: m.pending ? 0.6 : 1,
                     }}>
                       {m.imageCid ? (
-                        <img src={`https://ipfs.io/ipfs/${m.imageCid}`} alt="" style={{ maxWidth: 180, borderRadius: 8, display: "block" }} />
+                        <img src={`https://gateway.pinata.cloud/ipfs/${m.imageCid}`} alt="" style={{ maxWidth: 180, borderRadius: 8, display: "block" }} />
                       ) : m.pending && m.imageCid === null ? (
                         <span>{isVi ? "Đang tải ảnh..." : "Uploading image..."}</span>
                       ) : (

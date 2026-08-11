@@ -657,7 +657,7 @@ export default function DashboardPage() {
                       {/* Image */}
                       {l.imageCid && (
                         <div style={{ height:140, overflow:"hidden", backgroundColor:T.surfaceAlt }}>
-                          <img src={`https://ipfs.io/ipfs/${l.imageCid}`} alt={l.name} style={{ width:"100%", height:"100%", objectFit:"contain" }} onError={e => { (e.target as HTMLImageElement).style.display="none"; }} />
+                          <img src={`https://gateway.pinata.cloud/ipfs/${l.imageCid}`} alt={l.name} style={{ width:"100%", height:"100%", objectFit:"contain" }} onError={e => { (e.target as HTMLImageElement).style.display="none"; }} />
                         </div>
                       )}
                       {!l.imageCid && (
@@ -818,7 +818,7 @@ export default function DashboardPage() {
                 <label style={{ display:"block", fontFamily:T.fontSans, fontSize:12, color:T.inkMuted, marginBottom:5 }}>{isVi?"Ảnh sản phẩm (tùy chọn)":"Product image (optional)"}</label>
                 {form.image_cid && (
                   <div style={{ position:"relative", marginBottom:8 }}>
-                    <img src={`https://ipfs.io/ipfs/${form.image_cid}`} alt="" style={{ width:"100%", height:160, objectFit:"contain", backgroundColor:T.surfaceAlt, borderRadius:6, border:`1px solid ${T.border}` }} onError={e => { (e.target as HTMLImageElement).style.display="none"; }} />
+                    <img src={`https://gateway.pinata.cloud/ipfs/${form.image_cid}`} alt="" style={{ width:"100%", height:160, objectFit:"contain", backgroundColor:T.surfaceAlt, borderRadius:6, border:`1px solid ${T.border}` }} onError={e => { (e.target as HTMLImageElement).style.display="none"; }} />
                     <button onClick={() => setForm(p => ({...p,image_cid:""}))} style={{ position:"absolute", top:6, right:6, width:22, height:22, borderRadius:"50%", backgroundColor:"rgba(0,0,0,0.5)", color:"#fff", display:"flex", alignItems:"center", justifyContent:"center", cursor:"pointer" }}><X size={12} /></button>
                   </div>
                 )}

@@ -168,7 +168,7 @@ function ListingsSection({ shopId, listings, isVi }: { shopId:string; listings:L
             {/* Image */}
             {l.imageCid ? (
               <div style={{ height:120, borderRadius:8, overflow:"hidden", backgroundColor:T.surfaceAlt, flexShrink:0 }}>
-                <img src={`https://ipfs.io/ipfs/${l.imageCid}`} alt={l.name} style={{ width:"100%", height:"100%", objectFit:"contain" }} onError={e => { (e.target as HTMLImageElement).style.display="none"; }} />
+                <img src={`https://gateway.pinata.cloud/ipfs/${l.imageCid}`} alt={l.name} style={{ width:"100%", height:"100%", objectFit:"contain" }} onError={e => { (e.target as HTMLImageElement).style.display="none"; }} />
               </div>
             ) : (
               <div style={{ height:80, borderRadius:8, backgroundColor:T.surfaceAlt, display:"flex", alignItems:"center", justifyContent:"center", flexShrink:0 }}>

@@ -133,7 +133,7 @@ function ProductCard({ product, isVi, onClick }: { product: Product; isVi: boole
       {/* Cover image — ảnh thật (IPFS) cho sản phẩm thật đã upload, fallback SVG demo */}
       <div style={pcImgWrapStyle}>
         <img
-          src={product.imageCid ? `https://ipfs.io/ipfs/${product.imageCid}` : productImg(product.id, product.category, 300, 140)}
+          src={product.imageCid ? `https://gateway.pinata.cloud/ipfs/${product.imageCid}` : productImg(product.id, product.category, 300, 140)}
           alt={product.name}
           style={pcImgStyle}
           onError={e => {

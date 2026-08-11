@@ -200,7 +200,7 @@ export default function ManageProductPage() {
           {/* Image */}
           <div style={{ border: `1px solid ${T.border}`, borderRadius: 12, backgroundColor: T.surface, overflow: "hidden", marginBottom: 24 }}>
             {listing.imageCid ? (
-              <img src={`https://ipfs.io/ipfs/${listing.imageCid}`} alt={listing.name}
+              <img src={`https://gateway.pinata.cloud/ipfs/${listing.imageCid}`} alt={listing.name}
                 style={{ width: "100%", height: 320, objectFit: "contain", display: "block", backgroundColor: T.surfaceAlt }}
                 onError={e => { (e.target as HTMLImageElement).style.display = "none"; }} />
             ) : (
@@ -309,7 +309,7 @@ export default function ManageProductPage() {
                   <label style={{ display: "block", fontFamily: T.fontSans, fontSize: 12, color: T.inkMuted, marginBottom: 5 }}>{isVi ? "Ảnh sản phẩm (tùy chọn)" : "Product image (optional)"}</label>
                   {form.image_cid && (
                     <div style={{ position: "relative", marginBottom: 8 }}>
-                      <img src={`https://ipfs.io/ipfs/${form.image_cid}`} alt="" style={{ width: "100%", height: 180, objectFit: "contain", backgroundColor: T.surfaceAlt, borderRadius: 6, border: `1px solid ${T.border}` }} onError={e => { (e.target as HTMLImageElement).style.display = "none"; }} />
+                      <img src={`https://gateway.pinata.cloud/ipfs/${form.image_cid}`} alt="" style={{ width: "100%", height: 180, objectFit: "contain", backgroundColor: T.surfaceAlt, borderRadius: 6, border: `1px solid ${T.border}` }} onError={e => { (e.target as HTMLImageElement).style.display = "none"; }} />
                       <button onClick={() => setForm(p => ({ ...p, image_cid: "" }))} style={{ position: "absolute", top: 6, right: 6, width: 22, height: 22, borderRadius: "50%", backgroundColor: "rgba(0,0,0,0.5)", color: "#fff", display: "flex", alignItems: "center", justifyContent: "center", cursor: "pointer" }}><X size={12} /></button>
                     </div>
                   )}

@@ -124,7 +124,7 @@ function ShopCard({ shop, index }: { shop:Shop; index:number }) {
     >
       {/* Cover image — logo thật (IPFS) nếu shop đã upload, fallback SVG placeholder demo */}
       <img
-        src={shop.logoCid ? `https://ipfs.io/ipfs/${shop.logoCid}` : coverImage(shop.id, shop.category, 400, 130)}
+        src={shop.logoCid ? `https://gateway.pinata.cloud/ipfs/${shop.logoCid}` : coverImage(shop.id, shop.category, 400, 130)}
         alt={shop.name}
         style={scCoverImgStyle}
         onError={e => {

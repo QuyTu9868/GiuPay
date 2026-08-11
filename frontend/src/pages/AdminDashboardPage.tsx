@@ -129,7 +129,7 @@ function ShopThumb({
   return (
     <div className={className} style={{ ...style, overflow: "hidden", padding: 0 }}>
       <img
-        src={`https://ipfs.io/ipfs/${cid}`}
+        src={`https://gateway.pinata.cloud/ipfs/${cid}`}
         alt={shop.name}
         onError={() => setBroken(true)}
         style={{ width: "100%", height: "100%", objectFit: "cover", display: "block" }}
@@ -386,12 +386,12 @@ function ShopDetailPanel({
             <p style={{ ...P.label, marginBottom:8 }}>Ảnh cửa hàng</p>
             {shop.logo_cid || shop.doc_cid ? (
               <a
-                href={`https://ipfs.io/ipfs/${shop.logo_cid || shop.doc_cid}`}
+                href={`https://gateway.pinata.cloud/ipfs/${shop.logo_cid || shop.doc_cid}`}
                 target="_blank"
                 rel="noreferrer"
               >
                 <img
-                  src={`https://ipfs.io/ipfs/${shop.logo_cid || shop.doc_cid}`}
+                  src={`https://gateway.pinata.cloud/ipfs/${shop.logo_cid || shop.doc_cid}`}
                   alt={shop.name}
                   style={{ width:"100%", maxHeight:220, objectFit:"cover", borderRadius:8, display:"block" }}
                 />

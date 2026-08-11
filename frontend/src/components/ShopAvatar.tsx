@@ -18,7 +18,7 @@ import { useState, useEffect } from "react";
 import { createPortal } from "react-dom";
 import { X } from "@phosphor-icons/react";
 
-const ipfs = (cid: string) => `https://ipfs.io/ipfs/${cid}`;
+const ipfs = (cid: string) => `https://gateway.pinata.cloud/ipfs/${cid}`;
 
 function initials(name: string) {
   return (name || "?").split(" ").slice(0, 2).map(w => w[0]).join("").toUpperCase();
