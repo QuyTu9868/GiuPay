@@ -4,13 +4,11 @@
  * Buyer vẫn gõ được trong luồng demo cho vui, nhưng tin nhắn chỉ append tạm ở client
  * (không lưu DB) — rõ ràng đây là minh họa, không phải chat thật với shop.
  */
-import { DEMO_SHOPS_DATA } from "./data";
-
 export interface DemoChatMessage {
   sender: "buyer" | "shop";
   content: string;
   contentEn: string;
-  offsetMin: number; // phút trước "now" khi render — để hiện giờ hợp lý
+  offsetMin: number; // phút trước "now" khi render, để hiện giờ hợp lý
 }
 
 export interface DemoChat {
@@ -19,40 +17,10 @@ export interface DemoChat {
   messages: DemoChatMessage[];
 }
 
-export const DEMO_CHAT_SHOP_IDS = ["demo-1", "demo-3", "demo-16"] as const;
+// Demo shop đã gỡ nên không còn chat demo phía buyer.
+export const DEMO_CHAT_SHOP_IDS: readonly string[] = [];
 
-export const DEMO_CHATS: DemoChat[] = [
-  {
-    shopId: "demo-1",
-    shopName: DEMO_SHOPS_DATA["demo-1"].shop.name,
-    messages: [
-      { sender: "buyer", content: "Chào shop, MacBook Air M3 còn hàng không ạ?", contentEn: "Hi, is the MacBook Air M3 still in stock?", offsetMin: 190 },
-      { sender: "shop", content: "Dạ còn hàng ạ, shop có sẵn giao trong 24-48h nha!", contentEn: "Yes it's in stock, we can ship within 24-48h!", offsetMin: 185 },
-      { sender: "buyer", content: "Ok để em đặt qua escrow cho yên tâm", contentEn: "Ok I'll order through escrow to feel secure", offsetMin: 182 },
-      { sender: "shop", content: "Dạ vâng, shop luôn đóng gói kỹ và cập nhật tracking đầy đủ ạ.", contentEn: "Sure, we always pack carefully and update tracking fully.", offsetMin: 180 },
-    ],
-  },
-  {
-    shopId: "demo-3",
-    shopName: DEMO_SHOPS_DATA["demo-3"].shop.name,
-    messages: [
-      { sender: "buyer", content: "Áo size M còn không shop ơi?", contentEn: "Do you still have the shirt in size M?", offsetMin: 300 },
-      { sender: "shop", content: "Dạ còn ạ, bên em còn đủ size S/M/L nha bạn", contentEn: "Yes, we still have sizes S/M/L available", offsetMin: 295 },
-      { sender: "buyer", content: "Cho em xin ảnh thật của áo được không ạ", contentEn: "Can I get real photos of the shirt?", offsetMin: 293 },
-      { sender: "shop", content: "Dạ em gửi liền đây ạ, hàng y hình luôn nha", contentEn: "Sending right away, the item matches the photo exactly", offsetMin: 291 },
-    ],
-  },
-  {
-    shopId: "demo-16",
-    shopName: DEMO_SHOPS_DATA["demo-16"].shop.name,
-    messages: [
-      { sender: "buyer", content: "Máy ảnh này có kèm thẻ nhớ không shop?", contentEn: "Does this camera come with a memory card?", offsetMin: 120 },
-      { sender: "shop", content: "Dạ không kèm thẻ nhớ ạ, chỉ có máy + pin + sạc thôi bạn nhé", contentEn: "No memory card included, just the camera + battery + charger", offsetMin: 116 },
-      { sender: "buyer", content: "Vậy shop có bán thẻ nhớ riêng không?", contentEn: "Do you sell memory cards separately then?", offsetMin: 114 },
-      { sender: "shop", content: "Dạ có, bạn xem thêm ở mục sản phẩm phụ kiện nha", contentEn: "Yes, check our accessories listings for that", offsetMin: 110 },
-    ],
-  },
-];
+export const DEMO_CHATS: DemoChat[] = [];
 
 // ── Demo phía seller (Dashboard > Tin nhắn) ─────────────────────────────────
 // Ở vị trí shop, demo phải là hội thoại với KHÁCH HÀNG (không phải với shop khác như
