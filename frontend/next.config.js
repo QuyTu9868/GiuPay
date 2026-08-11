@@ -1,8 +1,12 @@
+const { withSentryConfig } = require("@sentry/nextjs");
+
 /** @type {import('next').NextConfig} */
 const nextConfig = {
   reactStrictMode: true,
   transpilePackages: ["@phosphor-icons/react"],
   experimental: {
+    // Next 14 cần cờ này để nạp src/instrumentation.ts (init Sentry phía server/edge).
+    instrumentationHook: true,
     // Tree-shake barrel import của phosphor-icons — chỉ bundle icon thực sự dùng
     // thay vì cả thư viện. Đây là nguồn bloat lớn nhất và an toàn để tối ưu.
     //
@@ -38,4 +42,10 @@ const nextConfig = {
     return config;
   },
 };
-module.exports = nextConfig;
+
+// Bọc Sentry: inject sentry.client.config vào bundle + báo lỗi build. Tắt upload source map
+// (sourcemaps.disable) để không cần SENTRY_AUTH_TOKEN (khỏi giữ secret cho khâu build).
+module.exports = withSentryConfig(nextConfig, {
+  silent: true,
+  sourcemaps: { disable: true },
+});
