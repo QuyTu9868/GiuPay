@@ -16,6 +16,7 @@ import { Providers }     from "@/app/providers";
 import { GlobalCSS }     from "@/components/GlobalCSS";
 import { ThemeProvider } from "@/lib/theme";
 import { NavBar }        from "@/components/NavBar";
+import { Analytics }     from "@vercel/analytics/react";
 
 import "@/app/globals.css";
 
@@ -37,6 +38,7 @@ export default function App({ Component, pageProps }: AppProps) {
         <GlobalCSS />
         {showNavBar && <NavBar />}
         <Component {...pageProps} />
+        <Analytics />
       </ThemeProvider>
     </Providers>
   );
