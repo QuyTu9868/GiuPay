@@ -699,21 +699,22 @@ function PaymentPanel({ order }: { order:OrderData }) {
         <div style={{ textAlign:"center", padding:"32px 0" }}>
           <div style={{ width:40, height:40, borderRadius:"50%", border:`2px solid ${T.border}`, borderTopColor:T.ink, animation:"ap-spin 700ms linear infinite", margin:"0 auto 16px" }} />
           <p style={{ fontFamily:T.fontSans, fontSize:14, color:T.inkMuted }}>{t.confirmingTx}</p>
+          <p style={{ fontFamily:T.fontSans, fontSize:12, color:T.inkMuted, lineHeight:1.6, maxWidth:280, margin:"10px auto 0" }}>{t.confirmingSafeToClose}</p>
           {txHash && <p style={{ fontFamily:T.fontMono, fontSize:10, color:T.inkMuted, marginTop:8, wordBreak:"break-all" }}>{txHash.slice(0,20)}...</p>}
         </div>
       )}
 
-      {/* Bridging (CCTP — chờ backend mint về Arc rồi nộp escrow hộ buyer) */}
+      {/* Bridging (CCTP — chờ backend mint về Arc rồi nộp escrow hộ buyer). Sau khi bridge-start
+          đã POST xong (xem handlePayment), backend/cctp-relayer.ts tự xử lý tiếp không cần tab
+          mở — vòng lặp poll bên dưới chỉ để cập nhật UI, không phải điều kiện để hoàn tất đơn. */}
       {step==="bridging" && (
         <div style={{ textAlign:"center", padding:"32px 0" }}>
           <div style={{ width:40, height:40, borderRadius:"50%", border:`2px solid ${T.border}`, borderTopColor:T.ink, animation:"ap-spin 700ms linear infinite", margin:"0 auto 16px" }} />
           <p style={{ fontFamily:T.fontSans, fontSize:14, fontWeight:600, color:T.ink, marginBottom:6 }}>
-            {isVi ? "Đang bắc cầu USDC về Arc..." : "Bridging USDC to Arc..."}
+            {t.bridgingTitle}
           </p>
-          <p style={{ fontFamily:T.fontSans, fontSize:12, color:T.inkMuted, lineHeight:1.6, maxWidth:260, margin:"0 auto" }}>
-            {isVi
-              ? "Thường mất khoảng 30 giây tới vài phút. Đừng đóng trang này — hệ thống sẽ tự động nộp tiền vào escrow khi bắc cầu xong."
-              : "This usually takes about 30 seconds to a few minutes. Keep this page open — funds will be deposited into escrow automatically once bridging completes."}
+          <p style={{ fontFamily:T.fontSans, fontSize:12, color:T.inkMuted, lineHeight:1.6, maxWidth:280, margin:"0 auto" }}>
+            {t.bridgingSafeToClose}
           </p>
           {txHash && <p style={{ fontFamily:T.fontMono, fontSize:10, color:T.inkMuted, marginTop:10, wordBreak:"break-all" }}>{txHash.slice(0,20)}...</p>}
         </div>
