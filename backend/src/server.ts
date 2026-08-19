@@ -70,8 +70,29 @@ app.use((err: Error, _req: Request, res: Response, _next: NextFunction) => {
   res.status(500).json({ success: false, error: err.message || "Lỗi server" });
 });
 
+// Supabase free tier có thể tạm ngưng/mất kết nối đúng lúc service khởi động (đặc biệt
+// sau khi Render tự sleep rồi dậy lại). Trước đây initDB() thất bại 1 lần là start-all.ts
+// process.exit(1) luôn — cả service (API + indexer + relayer + bot, gộp chung 1 process)
+// sập và KHÔNG tự hồi phục dù Supabase đã sẵn sàng lại sau đó, phải có người vào restart
+// tay trên Render. Giờ retry với backoff (cùng kiểu đã dùng cho RPC 429 ở indexer.ts/
+// cctp-relayer.ts) — cứ thử lại tới khi kết nối được, tự lành mà không cần ai đụng vào.
+async function connectDBWithRetry(): Promise<void> {
+  const MAX_DELAY_MS = 60_000;
+  let delay = 2_000;
+  for (;;) {
+    try {
+      await initDB();
+      return;
+    } catch (err: any) {
+      console.error(`❌ Kết nối DB thất bại, thử lại sau ${delay}ms:`, err?.message ?? err);
+      await new Promise((r) => setTimeout(r, delay));
+      delay = Math.min(delay * 2, MAX_DELAY_MS);
+    }
+  }
+}
+
 async function start() {
-  await initDB();
+  await connectDBWithRetry();
   app.listen(PORT, () => console.log(`🚀 http://localhost:${PORT}`));
 }
 

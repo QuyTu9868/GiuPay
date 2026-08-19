@@ -5,6 +5,10 @@ dotenv.config();
 export const db = new Pool({
   connectionString: process.env.DATABASE_URL,
   ssl: process.env.NODE_ENV === "production" ? { rejectUnauthorized: false } : false,
+  // Mặc định pg KHÔNG timeout (chờ vô thời hạn) — nếu Supabase treo kết nối thay vì báo lỗi
+  // nhanh, retry loop ở server.ts (connectDBWithRetry) sẽ không bao giờ được thử lại. Đặt
+  // giới hạn để mỗi lần thử luôn thất bại-nhanh-hoặc-thành-công, không bao giờ treo im lặng.
+  connectionTimeoutMillis: 10_000,
 });
 
 export async function initDB() {
