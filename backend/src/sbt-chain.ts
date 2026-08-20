@@ -94,7 +94,9 @@ export async function mintWarrantySBT(order: MintableOrder): Promise<number | nu
       // ipfs:// không fetch được trực tiếp trong <img> trình duyệt (không phải scheme HTTP) —
       // nhiều explorer (vd Blockscout) không tự resolve, hiện icon placeholder. Dùng gateway HTTP
       // để hiện ảnh preview được ở cả explorer lẫn ví.
-      image: order.product_image_cid ? `https://ipfs.io/ipfs/${order.product_image_cid}` : "",
+      // ipfs.io hay timeout/504 với pin mới (đã xác nhận nhiều lần) — dùng gateway Pinata
+      // (nơi ảnh thật sự được pin) để explorer/ví hiện được ảnh preview ổn định.
+      image: order.product_image_cid ? `https://gateway.pinata.cloud/ipfs/${order.product_image_cid}` : "",
       // Link bấm thẳng từ NFT/explorer quay lại xem trạng thái đơn MỚI NHẤT trên web — trạng thái
       // đơn đổi theo thời gian nên để ở đây thay vì "đóng cứng" vào metadata tĩnh.
       external_url: `${(process.env.GIUPAY_FRONTEND_URL ?? "http://localhost:3000").replace(/\/$/, "")}/order/${order.order_code}`,
