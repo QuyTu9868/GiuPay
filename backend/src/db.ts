@@ -157,6 +157,9 @@ export async function initDB() {
     ALTER TABLE orders ADD COLUMN IF NOT EXISTS ship_tracking VARCHAR(50);
     ALTER TABLE orders ADD COLUMN IF NOT EXISTS shipped_at    TIMESTAMPTZ;
 
+    -- Ảnh bằng chứng buyer đính kèm lúc mở tranh chấp, shop và admin đều xem được.
+    ALTER TABLE disputes ADD COLUMN IF NOT EXISTS image_cid VARCHAR(255);
+
     -- Chat buyer-shop — 1 luồng chat theo cặp (shop_id, buyer_wallet), CHỈ tạo được nếu buyer
     -- đã từng mua hàng của shop đó (kiểm tra ở tầng API khi POST, không ràng buộc ở DB).
     CREATE TABLE IF NOT EXISTS messages (

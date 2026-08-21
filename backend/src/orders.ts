@@ -107,6 +107,7 @@ const bridgeStartSchema = Joi.object({
 const openDisputeSchema = Joi.object({
   reason:     Joi.string().min(10).max(2000).required(),
   opened_by:  Joi.string().pattern(/^0x[a-fA-F0-9]{40}$/).required(),
+  image_cid:  Joi.string().optional().allow(""),
 });
 
 const resolveDisputeSchema = Joi.object({
@@ -518,8 +519,8 @@ router.post("/:code/dispute", validate(openDisputeSchema), async (req: Request, 
 
   const deadline = new Date(); deadline.setDate(deadline.getDate() + 7);
   const { rows: [dispute] } = await db.query<Dispute>(
-    "INSERT INTO disputes (order_id,opened_by,reason,attempt_number,deadline_at) VALUES ($1,$2,$3,$4,$5) RETURNING *",
-    [order.id, b.opened_by.toLowerCase(), b.reason, parseInt(count)+1, deadline]
+    "INSERT INTO disputes (order_id,opened_by,reason,attempt_number,deadline_at,image_cid) VALUES ($1,$2,$3,$4,$5,$6) RETURNING *",
+    [order.id, b.opened_by.toLowerCase(), b.reason, parseInt(count)+1, deadline, b.image_cid || null]
   );
   await db.query("UPDATE orders SET status='disputed',updated_at=NOW() WHERE id=$1", [order.id]);
 

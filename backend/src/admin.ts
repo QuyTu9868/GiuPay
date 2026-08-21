@@ -474,13 +474,16 @@ router.get(
 
     const { rows } = await db.query(
       `SELECT
-         d.id, d.order_id, d.opened_by, d.reason, d.status,
+         d.id, d.order_id, d.opened_by, d.reason, d.status, d.image_cid,
          d.resolution, d.attempt_number, d.shop_response,
          d.admin_note, d.opened_at, d.deadline_at,
          o.order_code,
          o.price_usdc,
-         s.name  AS shop_name,
-         s.gmail AS shop_gmail
+         o.product_name, o.product_image_cid, o.description,
+         o.buyer_wallet, o.tx_hash, o.chain_paid_from, o.warranty_days,
+         s.name           AS shop_name,
+         s.gmail          AS shop_gmail,
+         s.wallet_address AS shop_wallet
        FROM disputes d
        JOIN orders o ON o.id = d.order_id
        JOIN shops  s ON s.id = o.shop_id

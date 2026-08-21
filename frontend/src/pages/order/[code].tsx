@@ -53,7 +53,7 @@ function orderIdFromCode(orderCode: string): `0x${string}` {
 }
 
 interface OrderDetail {
-  order_code: string; product_name: string; description?: string;
+  order_code: string; product_name: string; description?: string; product_image_cid?: string;
   price_usdc: string; quantity: number; warranty_days?: number;
   status: string; shop_name: string; shop_wallet?: string; buyer_wallet?: string; shop_id?: string;
   tx_hash?: string; escrow_created_at?: string; escrow_released_at?: string;
@@ -63,6 +63,7 @@ interface OrderDetail {
 interface DisputeRow {
   id: string; reason: string; status: string; resolution?: string;
   shop_response?: string; admin_note?: string; opened_at: string; deadline_at?: string;
+  image_cid?: string;
 }
 
 const GLOBAL_CSS = `
@@ -93,6 +94,10 @@ export default function OrderDetailPage() {
   const [formErr, setFormErr]   = useState("");
   const [signStep, setSignStep] = useState(""); // label hiện lúc đang ký ví / chờ on-chain
   const [chatOpen, setChatOpen] = useState(false);
+
+  // Ảnh bằng chứng đính kèm lúc mở tranh chấp, shop và admin đều xem được sau này.
+  const [disputeImageFile, setDisputeImageFile] = useState<File | null>(null);
+  const [disputeImagePreview, setDisputeImagePreview] = useState<string>("");
 
   const load = useCallback(async () => {
     if (!code) return;
@@ -159,17 +164,28 @@ export default function OrderDetailPage() {
         }
       }
 
+      let imageCid = "";
+      if (disputeImageFile) {
+        setSignStep(isVi ? "Đang tải ảnh lên..." : "Uploading image...");
+        const fd = new FormData();
+        fd.append("image", disputeImageFile);
+        const upRes = await fetch(`${API}/api/upload/image`, { method: "POST", body: fd });
+        const upJ = await upRes.json();
+        if (upJ.success) imageCid = upJ.data.cid;
+        // Upload ảnh lỗi thì vẫn cho gửi khiếu nại tiếp (ảnh chỉ là bằng chứng thêm, không bắt buộc).
+      }
+
       setSignStep(isVi ? "Đang lưu khiếu nại..." : "Saving dispute...");
       const res = await fetch(`${API}/api/orders/${order.order_code}/dispute`, {
         method: "POST", headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ reason: reason.trim(), opened_by: walletAddress }),
+        body: JSON.stringify({ reason: reason.trim(), opened_by: walletAddress, image_cid: imageCid || undefined }),
       });
       const json = await res.json();
       if (!res.ok || !json.success) {
         setFormErr(json.error || (isVi ? "Không mở được tranh chấp" : "Could not open dispute"));
         return;
       }
-      setShowForm(false); setReason("");
+      setShowForm(false); setReason(""); setDisputeImageFile(null); setDisputeImagePreview("");
       await load();
     } catch (err: any) {
       setFormErr(
@@ -247,9 +263,14 @@ export default function OrderDetailPage() {
 
           {/* Header */}
           <div style={{ display: "flex", alignItems: "flex-start", justifyContent: "space-between", gap: 12, marginBottom: 28, flexWrap: "wrap" }}>
-            <div>
-              <code style={{ fontFamily: T.fontMono, fontSize: 11, color: T.inkMuted }}>{order.order_code}</code>
-              <h1 style={{ fontFamily: T.fontSans, fontSize: 20, fontWeight: 700, color: T.ink, marginTop: 4 }}>{order.product_name}</h1>
+            <div style={{ display: "flex", gap: 14, alignItems: "flex-start" }}>
+              {order.product_image_cid && (
+                <img src={`https://gateway.pinata.cloud/ipfs/${order.product_image_cid}`} alt={order.product_name}
+                  style={{ width: 64, height: 64, borderRadius: 10, objectFit: "cover", border: `1px solid ${T.border}`, flexShrink: 0 }} />
+              )}
+              <div>
+                <code style={{ fontFamily: T.fontMono, fontSize: 11, color: T.inkMuted }}>{order.order_code}</code>
+                <h1 style={{ fontFamily: T.fontSans, fontSize: 20, fontWeight: 700, color: T.ink, marginTop: 4 }}>{order.product_name}</h1>
               <div style={{ display: "flex", alignItems: "center", gap: 8, marginTop: 2 }}>
                 <p style={{ fontFamily: T.fontSans, fontSize: 13, color: T.inkMuted }}>{order.shop_name}</p>
                 {isOwner && order.shop_id && (
@@ -265,6 +286,7 @@ export default function OrderDetailPage() {
                     )}
                   </div>
                 )}
+              </div>
               </div>
             </div>
             <div style={{ textAlign: "right" }}>
@@ -403,6 +425,11 @@ export default function OrderDetailPage() {
                         <span style={{ fontFamily: T.fontSans, fontSize: 11, color: T.inkMuted }}>{timeAgo(d.opened_at)}</span>
                       </div>
                       <p style={{ fontFamily: T.fontSans, fontSize: 12, color: T.ink }}>{d.reason}</p>
+                      {d.image_cid && (
+                        <a href={`https://gateway.pinata.cloud/ipfs/${d.image_cid}`} target="_blank" rel="noreferrer" style={{ display: "block", marginTop: 6 }}>
+                          <img src={`https://gateway.pinata.cloud/ipfs/${d.image_cid}`} alt="" style={{ maxWidth: 160, maxHeight: 120, borderRadius: 6, border: `1px solid ${T.border}`, objectFit: "cover" }} />
+                        </a>
+                      )}
                       {d.shop_response && (
                         <p style={{ fontFamily: T.fontSans, fontSize: 11, color: T.inkMuted, marginTop: 6, borderTop: `1px solid ${T.border}`, paddingTop: 6 }}>
                           <strong style={{ color: T.inkMid }}>{isVi ? "Shop phản hồi: " : "Seller replied: "}</strong>{d.shop_response}
@@ -454,6 +481,30 @@ export default function OrderDetailPage() {
                         : "Note: cancelling still requires the seller (or admin, if they don't respond) to approve the refund — it's not instant."}
                     </p>
                   )}
+                  <div>
+                    <label style={{ display: "flex", alignItems: "center", gap: 8, fontFamily: T.fontSans, fontSize: 12, color: T.inkMuted, cursor: submitting ? "not-allowed" : "pointer", border: `1px dashed ${T.border}`, borderRadius: 8, padding: "8px 10px" }}>
+                      <input type="file" accept="image/*" disabled={submitting} style={{ display: "none" }}
+                        onChange={e => {
+                          const f = e.target.files?.[0];
+                          if (!f) return;
+                          setDisputeImageFile(f);
+                          setDisputeImagePreview(URL.createObjectURL(f));
+                          e.target.value = "";
+                        }}
+                      />
+                      {isVi ? "Đính kèm ảnh bằng chứng (không bắt buộc)" : "Attach evidence photo (optional)"}
+                    </label>
+                    {disputeImagePreview && (
+                      <div style={{ display: "flex", alignItems: "center", gap: 8, marginTop: 8 }}>
+                        <img src={disputeImagePreview} alt="" style={{ width: 60, height: 60, objectFit: "cover", borderRadius: 6, border: `1px solid ${T.border}` }} />
+                        <button type="button" onClick={() => { setDisputeImageFile(null); setDisputeImagePreview(""); }} disabled={submitting}
+                          style={{ fontFamily: T.fontSans, fontSize: 12, color: T.red.text, background: "none", border: "none", cursor: submitting ? "not-allowed" : "pointer", padding: 0 }}
+                        >
+                          {isVi ? "Xóa ảnh" : "Remove"}
+                        </button>
+                      </div>
+                    )}
+                  </div>
                   {(!order.chain_paid_from || order.chain_paid_from === "arc") && !submitting && (
                     <p style={{ fontFamily: T.fontSans, fontSize: 11, color: T.inkMuted, lineHeight: 1.5 }}>
                       {isShipped

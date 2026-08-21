@@ -67,6 +67,15 @@ interface Dispute {
   opened_at: string;
   deadline_at?: string;
   price_usdc: string;
+  image_cid?: string;
+  product_name?: string;
+  product_image_cid?: string;
+  description?: string;
+  buyer_wallet?: string;
+  tx_hash?: string;
+  chain_paid_from?: string;
+  warranty_days?: number;
+  shop_wallet?: string;
 }
 
 interface FeeWalletSetting {
@@ -508,20 +517,46 @@ function DisputeModal({
         </div>
 
         <div className="p-5 space-y-4">
+          {/* Sản phẩm đang tranh chấp */}
+          {dispute.product_name && (
+            <div className="flex items-center gap-3">
+              {dispute.product_image_cid && (
+                <img src={`https://gateway.pinata.cloud/ipfs/${dispute.product_image_cid}`} alt=""
+                  className="w-14 h-14 rounded-lg object-cover flex-shrink-0" style={{ border: "1px solid #374151" }} />
+              )}
+              <div className="min-w-0">
+                <p className={`text-sm font-medium ${T.textPrimary} truncate`}>{dispute.product_name}</p>
+                {dispute.description && <p className={`text-xs ${T.textMuted} line-clamp-2`}>{dispute.description}</p>}
+              </div>
+            </div>
+          )}
+
           {/* Summary */}
           <div className={`${T.bg} ${T.radius} p-4 space-y-2`}>
             <div className="flex justify-between text-sm">
               <span className={T.textMuted}>Giá trị đơn</span>
-              <span className={`font-semibold ${T.textPrimary}`}>{dispute.price_usdc} USDC</span>
+              <span className={`font-semibold ${T.textPrimary}`}>{dispute.price_usdc} USDC{dispute.chain_paid_from && dispute.chain_paid_from !== "arc" ? ` (qua ${dispute.chain_paid_from})` : ""}</span>
             </div>
             <div className="flex justify-between text-sm">
               <span className={T.textMuted}>Shop</span>
               <span className={T.textSecondary}>{dispute.shop_name}</span>
             </div>
-            <div className="flex justify-between text-sm">
+            <div className="flex justify-between text-sm items-center">
               <span className={T.textMuted}>Người mua</span>
-              <span className={`font-mono text-xs ${T.textSecondary}`}>{shortenAddr(dispute.opened_by)}</span>
+              {dispute.buyer_wallet ? (
+                <a href={`https://testnet.arcscan.app/address/${dispute.buyer_wallet}`} target="_blank" rel="noreferrer"
+                  className="font-mono text-xs text-indigo-400 hover:underline">{shortenAddr(dispute.buyer_wallet)}</a>
+              ) : (
+                <span className={`font-mono text-xs ${T.textSecondary}`}>{shortenAddr(dispute.opened_by)}</span>
+              )}
             </div>
+            {dispute.tx_hash && (
+              <div className="flex justify-between text-sm items-center">
+                <span className={T.textMuted}>Tx thanh toán</span>
+                <a href={`https://testnet.arcscan.app/tx/${dispute.tx_hash}`} target="_blank" rel="noreferrer"
+                  className="font-mono text-xs text-indigo-400 hover:underline">{shortenAddr(dispute.tx_hash)}</a>
+              </div>
+            )}
             {isOverdue && (
               <div className="flex items-center gap-1.5 mt-2 pt-2 border-t border-gray-800">
                 <svg className="w-3.5 h-3.5 text-red-400" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
@@ -536,6 +571,12 @@ function DisputeModal({
           <div>
             <p className={`text-xs ${T.textMuted} mb-1.5`}>Lý do tranh chấp</p>
             <p className={`text-sm ${T.textSecondary} leading-relaxed`}>{dispute.reason}</p>
+            {dispute.image_cid && (
+              <a href={`https://gateway.pinata.cloud/ipfs/${dispute.image_cid}`} target="_blank" rel="noreferrer" className="block mt-2">
+                <img src={`https://gateway.pinata.cloud/ipfs/${dispute.image_cid}`} alt=""
+                  className="max-w-[220px] max-h-[160px] rounded-lg object-cover" style={{ border: "1px solid #374151" }} />
+              </a>
+            )}
           </div>
 
           {/* Shop response */}

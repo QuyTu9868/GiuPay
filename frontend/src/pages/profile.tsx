@@ -18,7 +18,7 @@ const SBT_ADDRESS = (process.env.NEXT_PUBLIC_SBT_CONTRACT ?? "0x2460C32eDA3134bC
 const SBT_ABI = [{ name:"balanceOf", type:"function", stateMutability:"view", inputs:[{ name:"owner", type:"address" }], outputs:[{ name:"", type:"uint256" }] }] as const;
 
 interface BuyerOrder {
-  order_code:string; shop_name:string; shop_category:string; product_name:string;
+  order_code:string; shop_name:string; shop_category:string; product_name:string; product_image_cid?:string;
   price_usdc:string; quantity:number; status:string; warranty_days:number;
   tx_hash?:string; sbt_token_id?:string; escrow_created_at?:string; created_at:string;
   has_review?:boolean;
@@ -168,6 +168,10 @@ export default function ProfilePage() {
                     onMouseLeave={e => { e.currentTarget.style.boxShadow="none"; e.currentTarget.style.borderColor=T.border; }}
                   >
                     <div style={{ padding:"16px 20px", display:"flex", alignItems:"flex-start", justifyContent:"space-between", gap:12 }}>
+                      {order.product_image_cid && (
+                        <img src={`https://gateway.pinata.cloud/ipfs/${order.product_image_cid}`} alt={order.product_name}
+                          style={{ width:48, height:48, borderRadius:8, objectFit:"cover", border:`1px solid ${T.border}`, flexShrink:0 }} />
+                      )}
                       <div style={{ flex:1, minWidth:0 }}>
                         <div style={{ display:"flex", alignItems:"center", gap:8, marginBottom:4 }}>
                           <StatusBadge status={order.status} isVi={isVi} />
@@ -251,6 +255,10 @@ export default function ProfilePage() {
                     onMouseLeave={e => { e.currentTarget.style.boxShadow="none"; }}
                   >
                     <div style={{ padding:"16px 20px", display:"flex", alignItems:"flex-start", justifyContent:"space-between", gap:12 }}>
+                      {order.product_image_cid && (
+                        <img src={`https://gateway.pinata.cloud/ipfs/${order.product_image_cid}`} alt={order.product_name}
+                          style={{ width:48, height:48, borderRadius:8, objectFit:"cover", border:`1px solid ${T.border}`, flexShrink:0 }} />
+                      )}
                       <div style={{ flex:1, minWidth:0 }}>
                         <div style={{ display:"flex", alignItems:"center", gap:8, marginBottom:4 }}>
                           <SealCheck size={14} color={T.green.text} weight="fill" />

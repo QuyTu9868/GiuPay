@@ -44,6 +44,7 @@ interface OrderDetail {
 }
 interface DisputeRow {
   id: string; reason: string; status: string; opened_at: string; deadline_at?: string;
+  image_cid?: string;
 }
 
 export default function DisputeResponsePage() {
@@ -203,6 +204,11 @@ export default function DisputeResponsePage() {
                   <span style={{ fontFamily: T.fontSans, fontSize: 11, color: T.inkMuted }}>{timeAgo(dispute.opened_at)}</span>
                 </div>
                 <p style={{ fontFamily: T.fontSans, fontSize: 13, color: T.ink, lineHeight: 1.5 }}>{dispute.reason}</p>
+                {dispute.image_cid && (
+                  <a href={`https://gateway.pinata.cloud/ipfs/${dispute.image_cid}`} target="_blank" rel="noreferrer" style={{ display: "block", marginTop: 10 }}>
+                    <img src={`https://gateway.pinata.cloud/ipfs/${dispute.image_cid}`} alt="" style={{ maxWidth: 220, maxHeight: 160, borderRadius: 8, border: `1px solid ${T.border}`, objectFit: "cover" }} />
+                  </a>
+                )}
               </div>
 
               <div style={{ border: `1px solid ${T.border}`, borderRadius: 12, backgroundColor: T.surface, padding: "16px 20px", display: "flex", flexDirection: "column", gap: 12 }}>
