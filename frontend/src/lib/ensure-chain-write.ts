@@ -44,8 +44,8 @@ async function tryManualAddChain(targetChainId: number) {
         blockExplorerUrls: chain.blockExplorers?.default ? [chain.blockExplorers.default.url] : undefined,
       }],
     });
-  } catch {
-    // user từ chối thêm mạng hoặc lỗi khác — để switchChainAsync retry bên dưới ném lỗi thật
+  } catch (err) {
+    console.warn("[ensureChainWrite] wallet_addEthereumChain thất bại:", err);
   }
 }
 
