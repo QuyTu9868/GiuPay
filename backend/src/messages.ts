@@ -82,6 +82,7 @@ router.get("/inbox", async (req: Request, res: Response) => {
 
   const buyerSide = await db.query(
     `SELECT s.id as shop_id, s.name as shop_name, s.logo_cid as shop_logo,
+            s.wallet_address as shop_wallet,
             lm.content as last_content, lm.image_cid as last_image_cid,
             lm.created_at as last_at, lm.sender as last_sender
        FROM (
@@ -98,7 +99,7 @@ router.get("/inbox", async (req: Request, res: Response) => {
     [wallet]
   );
   const buyerConvos = buyerSide.rows.map(r => ({
-    role: "buyer" as const, shop_id: r.shop_id, buyer_wallet: wallet,
+    role: "buyer" as const, shop_id: r.shop_id, buyer_wallet: wallet, shop_wallet: r.shop_wallet,
     title: r.shop_name, last_content: r.last_content, last_image_cid: r.last_image_cid,
     last_at: r.last_at, last_sender: r.last_sender,
   }));

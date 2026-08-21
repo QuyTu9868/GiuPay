@@ -31,6 +31,7 @@ interface ConversationItem {
   demoKey?: string; // định danh riêng cho lookup demo — KHÔNG dùng shopId/buyerWallet vì demo không có thật trong DB
   shopId: string;
   buyerWallet: string;
+  shopWallet?: string; // địa chỉ ví shop, chỉ có khi role==="buyer" (mình chat với shop này)
   title: string;
   subtitle: string;
   lastAt?: string;
@@ -102,7 +103,7 @@ export function ChatWidget({ variant = "popover", onClose, autoOpenShopId, autoO
       const j = await res.json();
       const real: ConversationItem[] = (j.success ? j.data.conversations : []).map((r: any) => ({
         key: `real-${r.role}-${r.role === "buyer" ? r.shop_id : r.buyer_wallet}`,
-        role: r.role, isDemo: false, shopId: r.shop_id, buyerWallet: r.buyer_wallet,
+        role: r.role, isDemo: false, shopId: r.shop_id, buyerWallet: r.buyer_wallet, shopWallet: r.shop_wallet,
         title: r.role === "buyer" ? r.title : (r.title || shortenAddr(r.buyer_wallet)),
         subtitle: previewText(r, isVi), lastAt: r.last_at,
       }));
@@ -334,14 +335,23 @@ export function ChatWidget({ variant = "popover", onClose, autoOpenShopId, autoO
           </span>
         )}
         {selected && (
-          <span style={{ fontFamily: T.fontSans, fontSize: 13, fontWeight: 700, color: T.ink, flex: 1, whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" }}>
-            {selected.title}
-            {selected.isDemo && (
-              <span style={{ fontFamily: T.fontMono, fontSize: 9, fontWeight: 700, color: T.inkMuted, border: `1px solid ${T.border}`, borderRadius: 4, padding: "1px 5px", marginLeft: 6, textTransform: "uppercase" }}>
-                Demo
-              </span>
-            )}
-          </span>
+          <div style={{ flex: 1, minWidth: 0 }}>
+            <div style={{ fontFamily: T.fontSans, fontSize: 13, fontWeight: 700, color: T.ink, whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" }}>
+              {selected.title}
+              {selected.isDemo && (
+                <span style={{ fontFamily: T.fontMono, fontSize: 9, fontWeight: 700, color: T.inkMuted, border: `1px solid ${T.border}`, borderRadius: 4, padding: "1px 5px", marginLeft: 6, textTransform: "uppercase" }}>
+                  Demo
+                </span>
+              )}
+            </div>
+            {/* Vai trò + địa chỉ ví của người đang chat cùng - role="buyer" nghĩa là MÌNH là buyer nên
+                đối phương là shop (và ngược lại); hiện rõ để tránh nhầm đang nói chuyện với ai. */}
+            <div style={{ fontFamily: T.fontMono, fontSize: 10, color: T.inkMuted, whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" }}>
+              {selected.role === "buyer" ? (isVi ? "Shop" : "Shop") : (isVi ? "Khách hàng" : "Buyer")}
+              {" · "}
+              {shortenAddr(selected.role === "buyer" ? (selected.shopWallet ?? "") : selected.buyerWallet)}
+            </div>
+          </div>
         )}
         {!selected && <div style={{ flex: 1 }} />}
         {onClose && (
